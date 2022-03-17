@@ -32,4 +32,6 @@
     <string name="ToTheBeginning">To the beginning</string>
     <string name="DateOfForwardedMsg">Show date of forward message</string>
     <string name="ShowMessageID">Show message ID</string>
+    <string name="ShowRPCError">Toast all RPC errors</string>
+    <string name="ShowRPCErrorException">Exceptions: %s</string>
 </resources>
