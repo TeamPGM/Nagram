@@ -40,7 +40,7 @@ object UpdateUtil {
 
     private fun checkFollowChannel(ctx: Context, currentAccount: Int, channel: TLRPC.Chat) {
 
-        if (!channel.left || channel.kicked) {
+        if (true) {
 
             //   MessagesController.getMainSettings(currentAccount).edit().putBoolean("update_channel_skip", true).apply()
 

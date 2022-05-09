@@ -26694,7 +26694,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                         break;
                                     }
                                 }
-                                if (photoWidth > 512 || photoHeight > 512) {
+                                if (photoWidth >= 512 || photoHeight >= 512) {
                                     openPhotoViewerForMessage(cell, message);
                                 }
                                 return;
