@@ -57,7 +57,7 @@ android {
     buildToolsVersion "32.0.0"
     ndkVersion rootProject.ext.ndkVersion
 
-    defaultConfig.applicationId = "xyz.nextalone.nagram"
+    defaultConfig.applicationId = 'com.xtaolabs.pagergram'
 
     splits {
 
@@ -156,7 +156,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile project.file("release.keystore")
+            storeFile project.file("pagergram.jks")
             storePassword keystorePwd
             keyAlias alias
             keyPassword pwd
@@ -301,7 +301,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = outputFileName.replace("TMessagesProj", "Nagram-v" + versionName + "(" + versionCode + ")").replace("-release", "")
+            outputFileName = outputFileName.replace("TMessagesProj", "PagerGram-v" + versionName + "(" + versionCode + ")").replace("-release", "")
         }
     }
 
