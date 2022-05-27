@@ -265,6 +265,7 @@
     <string name="rememberAllBackMessages">Remember all clicked replies</string>
     <string name="DisableInstantCamera">Disable instant camera</string>
     <string name="showSeconds">Show timestamp in seconds</string>
+    <string name="showServicesTime">Show timestamp in service messages</string>
     <string name="AppUpdateNekoX">Update PagerGram</string>
     <string name="NekoXUpdateTranslationHint">Press to translate the change log</string>
     <string name="Name">Name</string>
