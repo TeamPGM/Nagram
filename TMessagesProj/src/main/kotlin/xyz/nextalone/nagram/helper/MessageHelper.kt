@@ -70,6 +70,6 @@ object MessageHelper {
         return if (!NaConfig.DateOfForwardedMsg.Bool()) {
             orig.toString()
         } else "$orig · ${LocaleController.getInstance().formatterDay.format(
-            obj.messageOwner.fwd_from.date * 1000)}"
+            obj.messageOwner.fwd_from.date.toLong() * 1000)}"
     }
 }
