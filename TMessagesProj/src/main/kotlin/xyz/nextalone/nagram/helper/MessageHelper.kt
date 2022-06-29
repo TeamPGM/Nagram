@@ -69,6 +69,7 @@ object MessageHelper {
     fun showForwardDate(obj: MessageObject, orig: CharSequence): String {
         return if (!NaConfig.DateOfForwardedMsg.Bool()) {
             orig.toString()
-        } else "$orig · ${LocaleController.formatDate.format(obj.messageOwner.fwd_from.date * 1000)}"
+        } else "$orig · ${LocaleController.getInstance().formatterDay.format(
+            obj.messageOwner.fwd_from.date * 1000)}"
     }
 }
