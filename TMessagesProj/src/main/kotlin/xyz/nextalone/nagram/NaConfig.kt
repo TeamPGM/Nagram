@@ -178,11 +178,6 @@ object NaConfig {
         ConfigItem.configTypeBool,
         false
     )
-    val ShowForwarderName = addConfig(
-        "ShowForwarderName",
-        ConfigItem.configTypeBool,
-        false
-    )
 
     fun addConfig(
         k: String,
