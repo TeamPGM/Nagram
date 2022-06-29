@@ -1,19 +1,14 @@
 package xyz.nextalone.nagram.helper
 
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.text.TextUtils
 import androidx.core.content.FileProvider
 import org.telegram.messenger.*
 import org.telegram.tgnet.TLRPC.*
-import java.io.File
-import java.io.FileOutputStream
-
 import xyz.nextalone.nagram.NaConfig
+import java.io.File
 
 
 object MessageHelper {
@@ -67,9 +62,11 @@ object MessageHelper {
 
     @JvmStatic
     fun showForwardDate(obj: MessageObject, orig: CharSequence): String {
+        val date: Long = obj.messageOwner.fwd_from.date.toLong()
+        val day: String = LocaleController.formatDate(date)
+        val timestamp: String = LocaleController.getInstance().formatterDay.format(date * 1000)
         return if (!NaConfig.DateOfForwardedMsg.Bool()) {
             orig.toString()
-        } else "$orig · ${LocaleController.getInstance().formatterDay.format(
-            obj.messageOwner.fwd_from.date.toLong() * 1000)}"
+        } else "$orig · $day $timestamp"
     }
 }
