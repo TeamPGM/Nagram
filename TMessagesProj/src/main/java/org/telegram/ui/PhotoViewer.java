@@ -4478,9 +4478,25 @@ public class PhotoViewer implements NotificationCenter.NotificationCenterDelegat
                     }
                     placeProvider.openPhotoForEdit(f.getAbsolutePath(), thumb, isVideo);
                 } else if (id == gallery_menu_copy) {
-                    MessageHelper.INSTANCE.addMessageToClipboard(currentMessageObject, () -> {
-                        BulletinFactory.of(containerView, null).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
-                    });
+                    File f = null;
+                    if (currentMessageObject != null) {
+                        if (currentMessageObject.messageOwner.media instanceof TLRPC.TL_messageMediaWebPage && currentMessageObject.messageOwner.media.webpage != null && currentMessageObject.messageOwner.media.webpage.document == null) {
+                            TLObject fileLocation = getFileLocation(currentIndex, null);
+                            f = FileLoader.getPathToAttach(fileLocation, true);
+                        } else {
+                            f = FileLoader.getPathToMessage(currentMessageObject.messageOwner);
+                        }
+                    } else if (currentFileLocationVideo != null) {
+                        f = FileLoader.getPathToAttach(getFileLocation(currentFileLocationVideo), getFileLocationExt(currentFileLocationVideo), avatarsDialogId != 0 || isEvent);
+                    } else if (pageBlocksAdapter != null) {
+                        f = pageBlocksAdapter.getFile(currentIndex);
+                    }
+
+                    if (f != null && f.exists()) {
+                        MessageHelper.INSTANCE.addFileToClipboard(f, () -> BulletinFactory.of(containerView, null).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show());
+                    } else {
+                        showDownloadAlert();
+                    }
                 }
             }
 
