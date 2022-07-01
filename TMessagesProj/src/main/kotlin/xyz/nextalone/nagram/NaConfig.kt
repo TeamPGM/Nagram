@@ -178,6 +178,11 @@ object NaConfig {
         ConfigItem.configTypeBool,
         false
     )
+    val ShowMessageID = addConfig(
+        "ShowMessageID",
+        ConfigItem.configTypeBool,
+        false
+    )
 
     fun addConfig(
         k: String,
