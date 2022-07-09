@@ -49,7 +49,7 @@ public class UserObject {
 
     public static String getFirstName(TLRPC.User user, boolean allowShort) {
         if (user == null || isDeleted(user)) {
-            return "DELETED";
+            return LocaleController.getString("HiddenName", R.string.HiddenName);
         }
         String name = user.first_name;
         if (TextUtils.isEmpty(name)) {
