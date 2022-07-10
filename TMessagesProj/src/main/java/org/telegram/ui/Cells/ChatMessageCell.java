@@ -10946,6 +10946,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             } catch (Exception ignore) {}
             if (nameStringFinal != null && currentUser != null) {
                 if (currentUser.premium && NaConfig.INSTANCE.getShowPremiumStarInChat().Bool()) {
+                    nameStringFinal = TextUtils.ellipsize(nameStringFinal, Theme.chat_namePaint, nameWidth - 2, TextUtils.TruncateAt.END);
                     SpannableStringBuilder spannableStringBuilder = SpannableStringBuilder.valueOf(String.format("  %s", nameStringFinal));
                     spannableStringBuilder.setSpan(new ColoredImageSpan(ContextCompat.getDrawable(getContext(), R.drawable.msg_premium_liststar)), 0, 1, 0);
                     nameStringFinal = spannableStringBuilder;
@@ -11269,6 +11270,7 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
                     replyNameWidth = AndroidUtilities.dp(4 + (needReplyImage ? 44 : 0));
                     if (stringFinalName != null) {
                         if (showReplyPremiumStar && NaConfig.INSTANCE.getShowPremiumStarInChat().Bool()) {
+                            stringFinalName = TextUtils.ellipsize(stringFinalName, Theme.chat_namePaint, maxWidth - 2, TextUtils.TruncateAt.END);
                             SpannableStringBuilder spannableStringBuilder = SpannableStringBuilder.valueOf(String.format("  %s", stringFinalName));
                             spannableStringBuilder.setSpan(new ColoredImageSpan(ContextCompat.getDrawable(getContext(), R.drawable.msg_premium_liststar)), 0, 1, 0);
                             stringFinalName = spannableStringBuilder;
