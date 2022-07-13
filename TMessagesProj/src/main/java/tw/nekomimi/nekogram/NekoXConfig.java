@@ -48,6 +48,7 @@ public class NekoXConfig {
             380570774, // Haruhi
             784901712, // NextAlone
             457896977, // Queally
+            782954985, // MaiTungTM
             347437156, // mrwangzhe
             583325201, // sam
             842474872, // null
