@@ -208,6 +208,11 @@ object NaConfig {
         ConfigItem.configTypeBool,
         true
     )
+    val autoInsertGIFCaption = addConfig(
+        "AutoInsertGIFCaption",
+        ConfigItem.configTypeBool,
+        true
+    )
 
     fun addConfig(
         k: String,
