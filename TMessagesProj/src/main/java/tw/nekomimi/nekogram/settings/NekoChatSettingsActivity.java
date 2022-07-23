@@ -124,7 +124,6 @@ public class NekoChatSettingsActivity extends BaseFragment implements Notificati
             LocaleController.getString("combineMessageEnabled", R.string.CombineMessageEnabled),
             LocaleController.getString("combineMessageDisabled", R.string.CombineMessageDisabled)
     }, null));
-    private final AbstractConfigCell scrollableChatPreviewRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getScrollableChatPreview()));
     private final AbstractConfigCell dateOfForwardMsgRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDateOfForwardedMsg()));
     private final AbstractConfigCell showMessageIDRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowMessageID()));
     private final AbstractConfigCell showPremiumStickersAnimationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowPremiumStickersAnimation()));
