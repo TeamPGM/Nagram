@@ -217,6 +217,11 @@ object NaConfig {
         ConfigItem.configTypeBool,
         false
     )
+    val hideOriginAfterTranslation: ConfigItem = addConfig(
+        "HideOriginAfterTranslation",
+        ConfigItem.configTypeBool,
+        false
+    )
 
     fun addConfig(
         k: String,
