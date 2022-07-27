@@ -152,10 +152,6 @@ public class NekoXConfig {
         preferences.edit().putInt("autoUpdateReleaseChannel", autoUpdateReleaseChannel = channel).apply();
     }
 
-    public static void setIgnoredUpdateTag(String ignored) {
-        preferences.edit().putString("ignoredUpdateTag", ignoredUpdateTag = ignored).apply();
-    }
-
     public static boolean isDeveloper() {
         return true;
     }
