@@ -233,6 +233,11 @@ object NaConfig {
         ConfigItem.configTypeBool,
         false
     )
+    val customChannelLabel = addConfig(
+        "CustomChannelLabel",
+        ConfigItem.configTypeString,
+        LocaleController.getString("channelLabel", R.string.channelLabel)
+    )
 
     fun addConfig(
         k: String,
