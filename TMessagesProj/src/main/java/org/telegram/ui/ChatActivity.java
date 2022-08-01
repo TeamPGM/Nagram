@@ -19439,7 +19439,7 @@ ChatActivity extends BaseFragment implements NotificationCenter.NotificationCent
                 removeSelfFromStack();
                 fragment.finishFragment();
             } else {
-                // finishFragment();
+                 finishFragment();
             }
         }
     }
