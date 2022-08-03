@@ -243,6 +243,11 @@ object NaConfig {
         ConfigItem.configTypeBool,
         false
     )
+    val useExperimentalFileLoader = addConfig(
+        "UseExperimentalFileLoader",
+        ConfigItem.configTypeBool,
+        false
+    )
 
     fun addConfig(
         k: String,
