@@ -253,6 +253,11 @@ object NaConfig {
         ConfigItem.configTypeBool,
         false
     )
+    val quickToggleAnonymous = addConfig(
+        "QuickToggleAnonymous",
+        ConfigItem.configTypeBool,
+        false
+    )
 
     fun addConfig(
         k: String,
