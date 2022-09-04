@@ -3005,7 +3005,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 builder.addTitle("@" + user.username);
 
                 if (userId == getUserConfig().clientUserId && isQrNeedVisible()) {
-                    builder.addItem(LocaleController.getString("QrCode", R.string.QrCode), R.drawable.wallet_qr, __ -> {
+                    builder.addItem(LocaleController.getString("QrCode", R.string.QrCode), R.drawable.msg_qrcode, __ -> {
                         Bundle args = new Bundle();
                         args.putLong("chat_id", chatId);
                         args.putLong("user_id", userId);
@@ -4456,7 +4456,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             BottomBuilder builder = new BottomBuilder(getParentActivity());
             builder.addTitle("@" + username);
 
-            builder.addItem(LocaleController.getString("QrCode", R.string.QrCode), R.drawable.wallet_qr, __ -> {
+            builder.addItem(LocaleController.getString("QrCode", R.string.QrCode), R.drawable.msg_qrcode, __ -> {
                 Bundle args = new Bundle();
                 args.putLong("chat_id", chatId);
                 args.putLong("user_id", userId);
@@ -7107,10 +7107,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 //                    if (!user.premium && !BuildVars.IS_BILLING_UNAVAILABLE && !user.self && userInfo != null && !getMessagesController().premiumLocked && !userInfo.premium_gifts.isEmpty()) {
 //                        otherItem.addSubItem(gift_premium, R.drawable.msg_gift_premium, LocaleController.getString(R.string.GiftPremium));
 //                    }
-                    otherItem.addSubItem(start_secret_chat, R.drawable.baseline_lock_24, LocaleController.getString("StartEncryptedChat", R.string.StartEncryptedChat));
+                    otherItem.addSubItem(start_secret_chat, R.drawable.menu_secret, LocaleController.getString("StartEncryptedChat", R.string.StartEncryptedChat));
                 }
                 if (StrUtil.isNotBlank(user.username)) {
-                    otherItem.addSubItem(qr_code, R.drawable.wallet_qr, LocaleController.getString("ShareQRCode", R.string.ShareQRCode));
+                    otherItem.addSubItem(qr_code, R.drawable.msg_qrcode, LocaleController.getString("ShareQRCode", R.string.ShareQRCode));
                 }
                 otherItem.addSubItem(add_shortcut, R.drawable.msg_home, LocaleController.getString("AddShortcut", R.string.AddShortcut));
             }
@@ -7184,7 +7184,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 otherItem.addSubItem(leave_group, R.drawable.msg_leave, LocaleController.getString("DeleteAndExit", R.string.DeleteAndExit));
             }
             if (StrUtil.isNotBlank(chat.username) || ChatObject.canUserDoAdminAction(chat, ChatObject.ACTION_INVITE)) {
-                otherItem.addSubItem(qr_code, R.drawable.wallet_qr, LocaleController.getString("ShareQRCode", R.string.ShareQRCode));
+                otherItem.addSubItem(qr_code, R.drawable.msg_qrcode, LocaleController.getString("ShareQRCode", R.string.ShareQRCode));
             }
             otherItem.addSubItem(add_shortcut, R.drawable.msg_home, LocaleController.getString("AddShortcut", R.string.AddShortcut));
         }
