@@ -22336,7 +22336,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 icons.add(R.drawable.msg_reset);
                             }
                             if (allowRepeat && NaConfig.INSTANCE.getShowGreatOrPoor().Bool()) {
-                                items.add(LocaleController.getString("Great", R.string.Great));
+                                items.add(NaConfig.INSTANCE.getCustomGreat().String());
                                 options.add(nkbtn_greatOrPoor);
                                 icons.add(R.drawable.msg_prpr);
                             }
@@ -30331,7 +30331,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         }
     }
-    
+
     private void repeatMessage(boolean isLongClick, boolean isRepeatasCopy) {
         if (checkSlowMode(chatActivityEnterView.getSendButton())) {
             return;
@@ -30355,7 +30355,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 return;
             }
         }
-        
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
         builder.setTitle(LocaleController.getString("Repeat", R.string.Repeat));
         builder.setMessage(LocaleController.getString("repeatConfirmText", R.string.repeatConfirmText));
@@ -30369,7 +30369,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         builder.setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null);
         showDialog(builder.create());
     }
-    
+
     private void doRepeatMessage(boolean isLongClick, ArrayList<MessageObject> messages, boolean isRepeatAsCopy) {
         if (selectedObject != null && selectedObject.messageOwner != null && (isLongClick || isThreadChat() || getMessagesController().isChatNoForwards(currentChat))) {
             // If selected message contains `replyTo`:
@@ -30397,14 +30397,14 @@ selectedObjectGroup) != null) {
             }
             return;
         }
-        
+
         if (isRepeatAsCopy) {
             forwardMessages(messages, true, false, true, 0);
         } else {
             forwardMessages(messages, false, false, true, 0);
         }
     }
-    
+
     public void invertReplyMessage(boolean isLongClick) {
         if (checkSlowMode(chatActivityEnterView.getSendButton())) {
             return;
@@ -30447,15 +30447,16 @@ selectedObjectGroup) != null) {
             }
         }
     }
-    
+
     public void sendGreatOrGreat(boolean isLongClick) {
         if (checkSlowMode(chatActivityEnterView.getSendButton())) {
             return;
         }
-        getSendMessagesHelper().sendMessage(isLongClick ? "破烂" : "好耶", dialog_id, selectedObject, threadMessageObject
-        , null, false, null, null, null, true, 0, null);
+        getSendMessagesHelper().sendMessage(isLongClick ? NaConfig.INSTANCE.getCustomPoor().String() : NaConfig.INSTANCE.getCustomGreat().String(),
+                dialog_id, selectedObject, threadMessageObject, null, false,
+                null, null, null, true, 0, null);
     }
-    
+
     public void setScrollToMessage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
         builder.setTitle(LocaleController.getString("InputMessageId", R.string.InputMessageId));
@@ -30478,7 +30479,7 @@ selectedObjectGroup) != null) {
         editText.setPadding(0, 0, 0, 0);
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         builder.setView(editText);
-        
+
         builder.setPositiveButton(LocaleController.getString("OK", R.string.OK),
                 (dialogInterface, i) -> {
                     try {
