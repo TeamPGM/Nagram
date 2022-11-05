@@ -49,6 +49,7 @@ import cn.hutool.core.util.StrUtil;
 import kotlin.jvm.functions.Function0;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
+import xyz.nextalone.nagram.NaConfig;
 
 public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter implements NotificationCenter.NotificationCenterDelegate {
 
@@ -296,7 +297,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         int inviteIcon;
         int helpIcon;
         int peopleNearbyIcon;
-        if (eventType == 0) {
+        if (eventType == 0 || NaConfig.INSTANCE.getIconDecoration().Int() == 1) {
             newGroupIcon = R.drawable.msg_groups_ny;
             //newSecretIcon = R.drawable.msg_secret_ny;
             //newChannelIcon = R.drawable.msg_channel_ny;
@@ -307,7 +308,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
             inviteIcon = R.drawable.msg_invite_ny;
             helpIcon = R.drawable.msg_help_ny;
             peopleNearbyIcon = R.drawable.msg_nearby_ny;
-        } else if (eventType == 1) {
+        } else if (eventType == 1 || NaConfig.INSTANCE.getIconDecoration().Int() == 2) {
             newGroupIcon = R.drawable.msg_groups_14;
             //newSecretIcon = R.drawable.msg_secret_14;
             //newChannelIcon = R.drawable.msg_channel_14;
@@ -318,7 +319,7 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
             inviteIcon = R.drawable.msg_secret_ny;
             helpIcon = R.drawable.msg_help;
             peopleNearbyIcon = R.drawable.msg_secret_14;
-        } else if (eventType == 2) {
+        } else if (eventType == 2 || NaConfig.INSTANCE.getIconDecoration().Int() == 3) {
             newGroupIcon = R.drawable.msg_groups_hw;
             //newSecretIcon = R.drawable.msg_secret_hw;
             //newChannelIcon = R.drawable.msg_channel_hw;
@@ -352,14 +353,17 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter imple
         }
 
         // TODO: NekoX: Fix icon here
+//        int newGroupIcon = R.drawable.baseline_group_24;
+//        int newSecretIcon = R.drawable.baseline_lock_24;
+//        int newChannelIcon = R.drawable.baseline_chat_bubble_24;
 //        int contactsIcon = R.drawable.baseline_perm_contact_calendar_24;
 //        int savedIcon = R.drawable.baseline_bookmark_24;
 //        int settingsIcon = R.drawable.baseline_settings_24;
 //        int callsIcon = R.drawable.baseline_call_24;
 
         items.add(new Item(2, LocaleController.getString("NewGroup", R.string.NewGroup), newGroupIcon));
-        //items.add(new Item(3, LocaleController.getString("NewSecretChat", R.string.NewSecretChat), newSecretIcon));
-        //items.add(new Item(4, LocaleController.getString("NewChannel", R.string.NewChannel), newChannelIcon));
+//        items.add(new Item(3, LocaleController.getString("NewSecretChat", R.string.NewSecretChat), newSecretIcon));
+//        items.add(new Item(4, LocaleController.getString("NewChannel", R.string.NewChannel), newChannelIcon));
         items.add(new Item(6, LocaleController.getString("Contacts", R.string.Contacts), contactsIcon));
         items.add(new Item(11, LocaleController.getString("SavedMessages", R.string.SavedMessages), savedIcon));
         items.add(new Item(8, LocaleController.getString("Settings", R.string.Settings), settingsIcon));

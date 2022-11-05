@@ -122,9 +122,9 @@ public class NekoGeneralSettingsActivity extends BaseFragment {
     private final AbstractConfigCell useSystemDNSRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.useSystemDNS));
     private final AbstractConfigCell disableProxyWhenVpnEnabledRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableProxyWhenVpnEnabled()));
     private final AbstractConfigCell customDoHRow = cellGroup.appendCell(new ConfigCellTextInput(null, NekoConfig.customDoH, "https://1.0.0.1/dns-query", null));
-    private final AbstractConfigCell customPublicProxyIPRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.customPublicProxyIP, (view, position) -> {
-        customDialog_BottomInputString(position, NekoConfig.customPublicProxyIP, LocaleController.getString("customPublicProxyIPNotice"), "IP");
-    }, LocaleController.getString("UsernameEmpty", R.string.UsernameEmpty)));
+//    private final AbstractConfigCell customPublicProxyIPRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.customPublicProxyIP, (view, position) -> {
+//        customDialog_BottomInputString(position, NekoConfig.customPublicProxyIP, LocaleController.getString("customPublicProxyIPNotice"), "IP");
+//    }, LocaleController.getString("UsernameEmpty", R.string.UsernameEmpty)));
     private final AbstractConfigCell dividerConnection = cellGroup.appendCell(new ConfigCellDivider());
 
     private final AbstractConfigCell headerFolder = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("Folder")));
@@ -168,6 +168,12 @@ public class NekoGeneralSettingsActivity extends BaseFragment {
             LocaleController.getString("DependsOnDate", R.string.DependsOnDate),
             LocaleController.getString("Snowflakes", R.string.Snowflakes),
             LocaleController.getString("Fireworks", R.string.Fireworks)
+    }, null));
+    private final AbstractConfigCell iconDecorationRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getIconDecoration(), new String[]{
+            LocaleController.getString("DependsOnDate", R.string.DependsOnDate),
+            LocaleController.getString("Christmas", R.string.Christmas),
+            LocaleController.getString("Valentine", R.string.Valentine),
+            LocaleController.getString("HalloWeen", R.string.HalloWeen)
     }, null));
     private final AbstractConfigCell tabletModeRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NekoConfig.tabletMode, new String[]{
             LocaleController.getString("TabletModeDefault", R.string.TabletModeDefault),
