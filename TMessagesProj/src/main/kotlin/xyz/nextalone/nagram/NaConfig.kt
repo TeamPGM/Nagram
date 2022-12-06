@@ -358,6 +358,36 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val hideMessageSeenTooltip =
+        addConfig(
+            "HideMessageSeenTooltip",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val autoTranslate =
+        addConfig(
+            "AutoTranslate",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val typeMessageHintUseGroupName =
+        addConfig(
+            "TypeMessageHintUseGroupName",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val showSendAsUnderMessageHint =
+        addConfig(
+            "ShowSendAsUnderMessageHint",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val hideBotButtonInInputField =
+        addConfig(
+            "HideBotButtonInInputField",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     private fun addConfig(
         k: String,

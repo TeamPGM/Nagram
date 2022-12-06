@@ -317,12 +317,14 @@ import java.util.regex.Pattern;
 
 import cn.hutool.core.util.StrUtil;
 import kotlin.Unit;
+import tw.nekomimi.nekogram.DialogConfig;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
 import tw.nekomimi.nekogram.parts.MessageTransKt;
 import tw.nekomimi.nekogram.parts.PollTransUpdatesKt;
 import tw.nekomimi.nekogram.settings.NekoSettingsActivity;
 import tw.nekomimi.nekogram.transtale.Translator;
+import tw.nekomimi.nekogram.transtale.popupwrapper.LanguageDetector;
 import tw.nekomimi.nekogram.ui.BottomBuilder;
 import tw.nekomimi.nekogram.ui.MessageDetailsActivity;
 import tw.nekomimi.nekogram.utils.AlertUtil;
@@ -3223,7 +3225,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
                 if (ChatObject.isMegagroup(currentChat) || currentChat != null && !ChatObject.isChannel(currentChat)) {
-                    headerItem.addSubItem(nkheaderbtn_zibi, R.drawable.baseline_delete_24, LocaleController.getString("DeleteAllFromSelf", R.string.DeleteAllFromSelf));
+                    headerItem.addSubItem(nkheaderbtn_zibi, R.drawable.msg_delete, LocaleController.getString("DeleteAllFromSelf", R.string.DeleteAllFromSelf));
                 }
 
                 if (currentChat != null && !ChatObject.isChannel(currentChat) && currentChat.creator) {
@@ -24287,11 +24289,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             int availableHeight = totalHeight - scrimPopupY - AndroidUtilities.dp(46 + 16) - (isReactionsAvailable ? AndroidUtilities.dp(52) : 0);
 
 //                            if (SharedConfig.messageSeenHintCount > 0 && contentView.getKeyboardHeight() < AndroidUtilities.dp(20)) {
+                            if (!NaConfig.INSTANCE.getHideMessageSeenTooltip().Bool()) {
                                 availableHeight -= AndroidUtilities.dp(52);
                                 Bulletin bulletin = BulletinFactory.of(Bulletin.BulletinWindow.make(getContext()), themeDelegate).createErrorBulletin(AndroidUtilities.replaceTags(LocaleController.getString("MessageSeenTooltipMessage", R.string.MessageSeenTooltipMessage)));
                                 bulletin.setDuration(4000);
                                 bulletin.show();
                                 SharedConfig.updateMessageSeenHintCount(SharedConfig.messageSeenHintCount - 1);
+                            }
 //                            } else if (contentView.getKeyboardHeight() > AndroidUtilities.dp(20)) {
 //                                availableHeight -= contentView.getKeyboardHeight() / 3f;
 //                            }
@@ -29241,6 +29245,24 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (actionBar != null) {//Nekomura
                     actionBar.unreadBadgeSetCount(getMessagesStorage().getMainUnreadCount());
                 }
+                if (DialogConfig.isAutoTranslateEnable(dialog_id, getTopicId()) && LanguageDetector.hasSupport()) {
+                    final var messageObject = messageCell.getMessageObject();
+                    if (MessageHelper.isMessageObjectAutoTranslatable(messageObject)) {
+                        LanguageDetector.detectLanguage(
+                                MessageHelper.getMessagePlainText(messageObject),
+                                (String lang) -> {
+                                    if (!isLanguageRestricted(lang)) {
+                                        ArrayList<MessageObject> fmessages = new ArrayList<>(Arrays.asList(messageObject));
+                                        MessageTransKt.translateMessages(ChatActivity.this, fmessages, true);
+                                    }
+                                },
+                                (Exception e) -> {
+                                    FileLog.e("mlkit: failed to detect language in message");
+                                    e.printStackTrace();
+                                    messageObject.translating = false;
+                                });
+                    }
+                }
             }
 
             int position = holder.getAdapterPosition();
@@ -32023,7 +32045,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private void doRepeatMessage(boolean isLongClick, ArrayList<MessageObject> messages, boolean isRepeatAsCopy) {
-        if (selectedObject != null && selectedObject.messageOwner != null && (isLongClick || isThreadChat() || getMessagesController().isChatNoForwards(currentChat))) {
+        if (selectedObject != null && selectedObject.messageOwner != null && (isLongClick || (isThreadChat() && !isTopic) || getMessagesController().isChatNoForwards(currentChat))) {
             // If selected message contains `replyTo`:
             // When longClick it will reply to the `replyMessage` of selectedMessage
             // When not LongClick but in a threadchat: reply to the Thread
@@ -32157,5 +32179,35 @@ selectedObjectGroup) != null) {
             layoutParams.height = AndroidUtilities.dp(36);
             editText.setLayoutParams(layoutParams);
         }
+    }
+
+    private boolean isLanguageRestricted(String lang) {
+        if (lang == null || lang.equals("und")) {
+            return false;
+        }
+        String toLang = NekoConfig.translateToLang.String();
+        if (toLang == null || toLang.isEmpty()) {
+            toLang = LocaleController.getInstance().currentLocale.getLanguage();
+        }
+        if (toLang.contains("-")) {
+            toLang = toLang.substring(0, toLang.indexOf("-"));
+        }
+        if (lang.contains("-")) {
+            lang = lang.substring(0, lang.indexOf("-"));
+        }
+        if (lang.equals(toLang)) {
+            return true;
+        }
+        boolean restricted = false;
+        for (String language : RestrictedLanguagesSelectActivity.getRestrictedLanguages()) {
+            if (language.contains("_")) {
+                language = language.substring(0, language.indexOf("_"));
+            }
+            if (language.equals(lang)) {
+                restricted = true;
+                break;
+            }
+        }
+        return restricted;
     }
 }

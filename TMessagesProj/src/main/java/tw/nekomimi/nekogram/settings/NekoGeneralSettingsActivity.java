@@ -102,6 +102,7 @@ public class NekoGeneralSettingsActivity extends BaseFragment {
         customDialog_BottomInputString(position, NekoConfig.googleCloudTranslateKey, LocaleController.getString("GoogleCloudTransKeyNotice"), "Key");
     }, LocaleController.getString("UsernameEmpty", R.string.UsernameEmpty)));
     private final AbstractConfigCell hideOriginAfterTranslationRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getHideOriginAfterTranslation()));
+    private final AbstractConfigCell autoTranslateRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getAutoTranslate(), LocaleController.getString("AutoTranslateAbout")));
     private final AbstractConfigCell dividerTranslation = cellGroup.appendCell(new ConfigCellDivider());
 
     private final AbstractConfigCell headerMap = cellGroup.appendCell(new ConfigCellHeader("Map"));
@@ -333,7 +334,8 @@ public class NekoGeneralSettingsActivity extends BaseFragment {
                             LocaleController.getString("ProviderLingocloud", R.string.ProviderLingocloud),
                             LocaleController.getString("ProviderMicrosoftTranslator", R.string.ProviderMicrosoftTranslator),
                             LocaleController.getString("ProviderMicrosoftTranslator", R.string.ProviderYouDao),
-                            LocaleController.getString("ProviderMicrosoftTranslator", R.string.ProviderDeepLTranslate)
+                            LocaleController.getString("ProviderMicrosoftTranslator", R.string.ProviderDeepLTranslate),
+                            LocaleController.getString("ProviderTelegram", R.string.ProviderTelegram)
                     }, (i, __) -> {
                         boolean needReset = NekoConfig.translationProvider.Int() - 1 != i && (NekoConfig.translationProvider.Int() == 1 || i == 0);
                         NekoConfig.translationProvider.setConfigInt(i + 1);
@@ -719,6 +721,9 @@ public class NekoGeneralSettingsActivity extends BaseFragment {
                                     break;
                                 case 7:
                                     value = LocaleController.getString("ProviderDeepLTranslate", R.string.ProviderDeepLTranslate);
+                                    break;
+                                case 8:
+                                    value = LocaleController.getString("ProviderTelegram", R.string.ProviderTelegram);
                                     break;
                                 default:
                                     value = "Unknown";

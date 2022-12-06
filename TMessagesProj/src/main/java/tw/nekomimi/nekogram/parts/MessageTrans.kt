@@ -3,6 +3,7 @@ package tw.nekomimi.nekogram.parts
 import kotlinx.coroutines.*
 import org.telegram.messenger.MessageObject
 import org.telegram.tgnet.TLRPC
+import org.telegram.ui.ActionBar.AlertDialog
 import org.telegram.ui.ChatActivity
 import tw.nekomimi.nekogram.NekoConfig
 import tw.nekomimi.nekogram.transtale.TranslateDb
@@ -48,6 +49,8 @@ fun MessageObject.translateFinished(locale: Locale): Int {
 
     val db = TranslateDb.forLocale(locale)
 
+    translating = false
+
     if (isPoll) {
 
         val pool = (messageOwner.media as TLRPC.TL_messageMediaPoll).poll
@@ -88,10 +91,17 @@ fun ChatActivity.translateMessages2(target: Locale) = translateMessages(target)
 @JvmName("translateMessages")
 fun ChatActivity.translateMessages3(messages: List<MessageObject>) = translateMessages(messages = messages)
 
+@JvmName("translateMessages")
+fun ChatActivity.translateMessages4(messages: List<MessageObject>, autoTranslate: Boolean) = translateMessages(messages = messages, autoTranslate = autoTranslate)
+
 fun ChatActivity.translateMessages(target: Locale = NekoConfig.translateToLang.String().code2Locale
                                    , messages: List<MessageObject> = messageForTranslate?.let { listOf(it) }
         ?: selectedObjectGroup?.messages
-        ?: emptyList()) {
+        ?: emptyList(), autoTranslate: Boolean = false) {
+
+    if (messages.any { it.translating }) {
+        return
+    }
 
     // TODO: Fix file group
 
@@ -100,24 +110,28 @@ fun ChatActivity.translateMessages(target: Locale = NekoConfig.translateToLang.S
         messages.forEach { messageObject ->
 
             messageObject.messageOwner.translated = false
-
             messageHelper.resetMessageContent(dialogId, messageObject)
+            messageObject.translating = false
 
         }
 
         return
 
+    } else {
+        messages.forEach { messageObject ->
+            messageObject.translating = true
+        }
     }
 
-    val status = AlertUtil.showProgress(parentActivity)
-
+    var status: AlertDialog? = null
     val cancel = AtomicBoolean()
-
-    status.setOnCancelListener {
-        cancel.set(true)
+    if (!autoTranslate) {
+        status = AlertUtil.showProgress(parentActivity)
+        status.setOnCancelListener {
+            cancel.set(true)
+        }
+        status.show()
     }
-
-    status.show()
 
     val deferreds = LinkedList<Deferred<Unit>>()
     val taskCount = AtomicInteger(messages.size)
@@ -126,9 +140,9 @@ fun ChatActivity.translateMessages(target: Locale = NekoConfig.translateToLang.S
     suspend fun next() {
         val index = taskCount.decrementAndGet()
         if (index == 0) {
-            status.uDismiss()
+            status?.uDismiss()
         } else if (messages.size > 1) {
-            status.uUpdate("${messages.size - index} / ${messages.size}")
+            status?.uUpdate("${messages.size - index} / ${messages.size}")
         }
     }
 
@@ -173,7 +187,7 @@ fun ChatActivity.translateMessages(target: Locale = NekoConfig.translateToLang.S
 
                         }.onFailure {
 
-                            status.uDismiss()
+                            status?.uDismiss()
 
                             val parentActivity = parentActivity
 
@@ -211,7 +225,7 @@ fun ChatActivity.translateMessages(target: Locale = NekoConfig.translateToLang.S
 
                             }.onFailure { e ->
 
-                                status.uDismiss()
+                                status?.uDismiss()
 
                                 val parentActivity = parentActivity
 
@@ -248,7 +262,7 @@ fun ChatActivity.translateMessages(target: Locale = NekoConfig.translateToLang.S
 
                         }.onFailure {
 
-                            status.uDismiss()
+                            status?.uDismiss()
 
                             val parentActivity = parentActivity
 
@@ -298,10 +312,13 @@ fun ChatActivity.translateMessages(target: Locale = NekoConfig.translateToLang.S
 
         UIUtil.runOnUIThread {
 
-            if (!cancel.get()) status.uDismiss()
+            if (!cancel.get()) status?.uDismiss()
 
         }
 
+    }
+    messages.forEach { messageObject ->
+        messageObject.translating = false
     }
 
 }
