@@ -3672,14 +3672,14 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                 getNotificationsController().cleanupNotificationChannels();
                             } else if (which == 19) {
                                 SharedConfig.toggleForceRTMPStream();
-                            } else if (which == 18) {
+                            } else if (which == 20) {
                                 ApplicationLoader.applicationContext.deleteDatabase("webview.db");
                                 ApplicationLoader.applicationContext.deleteDatabase("webviewCache.db");
                                 WebStorage.getInstance().deleteAllData();
-                            } else if (which == 19) {
+                            } else if (which == 21) {
                                 SharedConfig.toggleDebugWebView();
                                 Toast.makeText(getParentActivity(), LocaleController.getString(SharedConfig.debugWebView ? R.string.DebugMenuWebViewDebugEnabled : R.string.DebugMenuWebViewDebugDisabled), Toast.LENGTH_SHORT).show();
-                            } else if (which == 20) {
+                            } else if (which == 22) {
                                 SharedConfig.toggleForceDisableTabletMode();
 
                                 Activity activity = AndroidUtilities.findActivity(context);
@@ -3688,11 +3688,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                 activity.finishAffinity(); // Finishes all activities.
                                 activity.startActivity(intent);    // Start the launch activity
                                 System.exit(0);
-                            } else if (which == 21) {
+                            } else if (which == 23) {
                                 SharedConfig.useLNavigation = !SharedConfig.useLNavigation;
                                 SharedConfig.saveConfig();
                                 getParentActivity().recreate();
-                            } else if (which == 22) {
+                            } else if (which == 24) {
                                 FloatingDebugController.setActive((LaunchActivity) getParentActivity(), !FloatingDebugController.isActive());
                             }
                         });
