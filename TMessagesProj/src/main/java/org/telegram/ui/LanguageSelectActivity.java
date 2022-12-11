@@ -15,30 +15,41 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Canvas;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
+import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.R;
 import org.telegram.messenger.Utilities;
-import org.telegram.ui.ActionBar.Theme;
-import org.telegram.ui.ActionBar.ThemeDescription;
-import org.telegram.ui.Cells.LanguageCell;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
+import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
+import org.telegram.ui.ActionBar.Theme;
+import org.telegram.ui.ActionBar.ThemeDescription;
+import org.telegram.ui.Cells.HeaderCell;
+import org.telegram.ui.Cells.LanguageCell;
 import org.telegram.ui.Cells.ShadowSectionCell;
+import org.telegram.ui.Cells.TextCheckCell;
+import org.telegram.ui.Cells.TextInfoPrivacyCell;
+import org.telegram.ui.Cells.TextRadioCell;
+import org.telegram.ui.Cells.TextSettingsCell;
 import org.telegram.ui.Components.AlertsCreator;
+import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.EmptyTextProgressView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
@@ -68,6 +79,8 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
     private ArrayList<LocaleController.LocaleInfo> searchResult;
     private ArrayList<LocaleController.LocaleInfo> sortedLanguages;
     private ArrayList<LocaleController.LocaleInfo> unofficialLanguages;
+
+    private ActionBarMenuItem searchItem;
 
     @Override
     public boolean onFragmentCreate() {
@@ -102,7 +115,7 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
         });
 
         ActionBarMenu menu = actionBar.createMenu();
-        ActionBarMenuItem item = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
+        searchItem = menu.addItem(0, R.drawable.ic_ab_search).setIsSearchField(true).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
             @Override
             public void onSearchExpand() {
                 searching = true;
@@ -138,7 +151,7 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
                 }
             }
         });
-        item.setSearchFieldHint(LocaleController.getString("Search", R.string.Search));
+        searchItem.setSearchFieldHint(LocaleController.getString("Search", R.string.Search));
 
         listAdapter = new ListAdapter(context, false);
         searchListViewAdapter = new ListAdapter(context, true);
@@ -173,7 +186,7 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
                     }).show();
                     return;
                 }
-                LocaleController.getInstance().applyLanguage(localeInfo, true, false, false, true, currentAccount);
+                LocaleController.getInstance().applyLanguage(localeInfo, true, false, false, true, currentAccount, () -> {});
                 parentLayout.rebuildAllFragmentViews(false, false);
             }
             finishFragment();
@@ -464,7 +477,6 @@ public class LanguageSelectActivity extends BaseFragment implements Notification
 //                case 3:
 //                    HeaderCell header = new HeaderCell(mContext);
 //                    header.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
-//                    header.setText(LocaleController.getString("Language", R.string.Language));
 //                    view = header;
 //                    break;
                 case 1:

@@ -508,7 +508,7 @@ public class PremiumPreviewFragment extends BaseFragment implements Notification
 //                    bottomSheet.setParentFragment(PremiumPreviewFragment.this);
 //                    showDialog(bottomSheet);
 //                } else {
-                    showDialog(new PremiumFeatureBottomSheet(PremiumPreviewFragment.this, cell.data.type, false, subscriptionTiers.get(selectedTierIndex)));
+//                    showDialog(new PremiumFeatureBottomSheet(PremiumPreviewFragment.this, cell.data.type, false, subscriptionTiers.get(selectedTierIndex)));
                // }
             }
         });
@@ -553,6 +553,11 @@ public class PremiumPreviewFragment extends BaseFragment implements Notification
 
         sentShowScreenStat(source);
         return fragmentView;
+    }
+
+    @Override
+    public boolean isActionBarCrossfadeEnabled() {
+        return false;
     }
 
     public static void buyPremium(BaseFragment fragment) {
@@ -1138,8 +1143,8 @@ public class PremiumPreviewFragment extends BaseFragment implements Notification
             premiumButtonView.setButton(getPremiumButtonText(currentAccount), v -> buyPremium(this, subscriptionTiers.get(selectedTierIndex), "settings"), animated);
             return;
         }
-        premiumButtonView.setFlickerDisabled(false);
-    }
+            premiumButtonView.setFlickerDisabled(false);
+        }
 
     @Override
     public boolean isLightStatusBar() {
@@ -1310,6 +1315,7 @@ public class PremiumPreviewFragment extends BaseFragment implements Notification
 
         });
     }
+
     // NekoX: remove Google Billing SubscriptionTier
     public final static class SubscriptionTier {
         public final TLRPC.TL_premiumSubscriptionOption subscriptionOption;
