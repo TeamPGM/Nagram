@@ -337,6 +337,10 @@ public class EmojiTabsStrip extends ScrollableHorizontalScrollView {
 
     }
 
+    protected boolean allowEmojisForNonPremium() {
+        return false;
+    }
+
     boolean first = true;
     private ValueAnimator appearAnimation;
     private int appearCount;
@@ -351,7 +355,7 @@ public class EmojiTabsStrip extends ScrollableHorizontalScrollView {
         if (emojiPacks == null) {
             return;
         }
-        final boolean isPremium = UserConfig.getInstance(UserConfig.selectedAccount).isPremium();
+        final boolean isPremium = UserConfig.getInstance(UserConfig.selectedAccount).isPremium() || allowEmojisForNonPremium();
         if (NekoConfig.disableTrending.Bool() && !isPremium) {
             return;
         }
@@ -717,11 +721,7 @@ public class EmojiTabsStrip extends ScrollableHorizontalScrollView {
                     if (drawable != null) {
                         drawable.setBounds(0, 0, getMeasuredWidth(), getMeasuredHeight());
                         drawable.setAlpha(255);
-                        if (drawable instanceof AnimatedEmojiDrawable) {
-                            ((AnimatedEmojiDrawable) drawable).draw(canvas, false);
-                        } else {
-                            drawable.draw(canvas);
-                        }
+                        drawable.draw(canvas);
                     }
                 }
 
