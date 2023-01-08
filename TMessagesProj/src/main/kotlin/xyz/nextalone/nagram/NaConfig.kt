@@ -394,6 +394,18 @@ object NaConfig {
             ConfigItem.configTypeInt,
             0
         )
+    val doNotUnarchiveBySwipe =
+        addConfig(
+            "DoNotUnarchiveBySwipe",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val doNotShareMyPhoneNumber =
+        addConfig(
+            "DoNotShareMyPhoneNumber",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     private fun addConfig(
         k: String,
