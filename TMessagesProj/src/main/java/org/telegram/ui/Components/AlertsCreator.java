@@ -3836,10 +3836,10 @@ public class AlertsCreator {
                 LocaleController.getString("MuteDisable", R.string.MuteDisable)
         };
         builder.addItems(items, new int[]{
-                R.drawable.baseline_notifications_paused_24,
-                R.drawable.baseline_notifications_paused_24,
-                R.drawable.baseline_notifications_paused_24,
-                R.drawable.baseline_notifications_paused_24
+                R.drawable.msg_mute_period,
+                R.drawable.msg_mute_period,
+                R.drawable.msg_mute_period,
+                R.drawable.msg_mute_period
         }, (i, text, cell) -> {
             int setting;
             if (i == 0) {
@@ -3865,7 +3865,7 @@ public class AlertsCreator {
             return null;
         }
 
-        BottomSheet.Builder builder = new BottomSheet.Builder(fragment.getParentActivity(), false, resourcesProvider);
+        BottomSheet.NekoXBuilder builder = new BottomSheet.NekoXBuilder(fragment.getParentActivity(), false);
         builder.setTitle(LocaleController.getString("Notifications", R.string.Notifications), true);
         CharSequence[] items = new CharSequence[]{
                 LocaleController.formatString("MuteFor", R.string.MuteFor, LocaleController.formatPluralString("Hours", 1)),

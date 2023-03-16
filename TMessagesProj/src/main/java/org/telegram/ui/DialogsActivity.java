@@ -6567,7 +6567,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         if (!NekoConfig.disableVibration.Bool()) {
             view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
         }
-        BottomBuilder builder = new BottomBuilder(getParentActivity());
+        BottomSheet.NekoXBuilder builder = new BottomSheet.NekoXBuilder(getParentActivity());
         final boolean hasUnread = getMessagesStorage().getArchiveUnreadCount() != 0;
 
         int[] icons = new int[]{
@@ -6578,7 +6578,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 hasUnread ? LocaleController.getString("MarkAllAsRead", R.string.MarkAllAsRead) : null,
                 SharedConfig.archiveHidden ? LocaleController.getString("PinInTheList", R.string.PinInTheList) : LocaleController.getString("HideAboveTheList", R.string.HideAboveTheList)
         };
-        builder.addItems(items, icons, (which, d, __) -> {
+        builder.setItems(items, icons, (d, which) -> {
             if (which == 0) {
                 getMessagesStorage().readAllDialogs(1);
             } else if (which == 1 && viewPages != null) {
@@ -6594,7 +6594,6 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     viewPages[a].listView.toggleArchiveHidden(true, dialogCell);
                 }
             }
-            return Unit.INSTANCE;
         });
         showDialog(builder.create());
     }
