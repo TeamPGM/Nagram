@@ -33313,6 +33313,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
     private void nkbtn_onclick(int id) {
         // from "items"
+        createUndoView();
         switch (id) {
             case nkbtn_repeat: {
                 repeatMessage(false,false);
