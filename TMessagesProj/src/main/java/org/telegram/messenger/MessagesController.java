@@ -17540,7 +17540,6 @@ public class MessagesController extends BaseController implements NotificationCe
             }
         }
         return canAddToForward;
->>>>>>> off/master
     }
 
     public void sortDialogs(LongSparseArray<TLRPC.Chat> chatsDict) {
@@ -18529,7 +18528,7 @@ public class MessagesController extends BaseController implements NotificationCe
         if (storiesController != null) {
             return storiesController;
         }
-        synchronized (lockObjects[currentAccount]) {
+        synchronized (lockObject) {
             if (storiesController != null) {
                 return storiesController;
             }
