@@ -39,6 +39,7 @@ public class NekoXConfig {
 //            1137038259, // NekoX APKs
             1500637449, // Nagram
             1645699549, // Nagram Updates
+            2001739482, // Nagram Tips
             1633997447, // PagerGram Chat
             1780943907, // PagerGram APKs
     };
@@ -50,7 +51,7 @@ public class NekoXConfig {
             457896977, // Queally
             782954985, // MaiTungTM
             5412523572L, //blxueya
-            347437156, // mrwangzhe
+            676660002, // mrwangzhe
             583325201, // sam
             842474872, // null
     };
