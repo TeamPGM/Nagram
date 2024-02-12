@@ -8,3 +8,5 @@ files:
         pt-BR: pt-rBR
         zh-CN: zh-rCN
         id: in
+bundles:
+  - 2
