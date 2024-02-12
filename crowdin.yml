@@ -1,6 +1,6 @@
 files:
   - source: /TMessagesProj/src/main/res/values/strings_na.xml
-    translation: /TMessagesProj/src/main/res/values-%android_code%/%original_file_name%
+    translation: /TMessagesProj/src/main/res/values-%android_code%/strings_na.xml
     languages_mapping:
       two_letters_code:
         he: iw
@@ -8,5 +8,3 @@ files:
         pt-BR: pt-rBR
         zh-CN: zh-rCN
         id: in
-bundles:
-  - 2
