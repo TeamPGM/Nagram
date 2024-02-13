@@ -122,4 +122,6 @@
     <string name="ShowSmallGIF">Arată Gif Mic</string>
     <string name="DisableClickCommandToSend">Dezactivează clic pe textul de comandă pentru a trimite</string>
     <string name="DisableClickCommandToSendHint">Pentru a preveni atingerea accidentală</string>
+    <string name="DisableDialogsFloatingButton">Dezactivează dialogul cu butonul plutitor</string>
+    <string name="DisableFlagSecure">Dezactivează Steagul Securizat</string>
 </resources>

@@ -122,4 +122,6 @@
     <string name="ShowSmallGIF">Показати маленький Gif</string>
     <string name="DisableClickCommandToSend">Вимкнути командний текст, щоб відправити</string>
     <string name="DisableClickCommandToSendHint">Щоб запобігти випадковому дотику</string>
+    <string name="DisableDialogsFloatingButton">Вимкнути плаваючу кнопку діалогу</string>
+    <string name="DisableFlagSecure">Вимкнути захист прапора</string>
 </resources>

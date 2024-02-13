@@ -122,4 +122,6 @@
     <string name="ShowSmallGIF">إظهار الغاز الصغير</string>
     <string name="DisableClickCommandToSend">تعطيل نص أمر النقر لإرساله</string>
     <string name="DisableClickCommandToSendHint">لمنع اللمس العرضي</string>
+    <string name="DisableDialogsFloatingButton">تعطيل مربعات الحوار الزر العائم</string>
+    <string name="DisableFlagSecure">تعطيل العلم الآمن</string>
 </resources>
