@@ -10268,13 +10268,13 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
         if (botButton == null) {
             return false;
         }
-        boolean canShowBotsMenu = hasBotCommands && dialog_id > 0;
+        boolean canShowBotsMenu = botMenuButtonType != BotMenuButtonType.NO_BUTTON && dialog_id > 0;
 //        if (canShowBotsMenu && ) {
 //            TLRPC.Chat chat = accountInstance.getMessagesController().getChat(-(int) dialog_id);
 //            canShowBotsMenu = chat == null || !chat.megagroup;
 //        }
 
-        if (hasBotCommands || botReplyMarkup != null) {
+        if (hasBotCommands || hasQuickReplies || botReplyMarkup != null) {
             if (botReplyMarkup != null) {
                 if (isPopupShowing() && currentPopupContentType == 1) {
                     botButtonDrawable.setIcon(R.drawable.input_keyboard, true);
