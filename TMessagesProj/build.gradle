@@ -11,7 +11,7 @@ repositories {
 }
 
 def verName = "10.9.1"
-def verCode = 1163
+def verCode = 1164
 
 
 def officialVer = "10.9.1"
@@ -340,6 +340,8 @@ android {
         }
 
         def lib = "libtmessages.*.so"
+        pickFirst "lib/armeabi-v7a/$lib"
+        pickFirst "lib/arm64-v8a/$lib"
     }
     namespace "org.telegram.messenger"
     lint {
