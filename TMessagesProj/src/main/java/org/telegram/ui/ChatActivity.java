@@ -358,6 +358,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int nkbtn_greatOrPoor = 2027;
     private final static int nkbtn_repeatascopy = 2028;
     private final static int nkbtn_setReminder = 2029;
+    private final static int nkbtn_sticker_copy = 2031;
+    private final static int nkbtn_sticker_copy_png = 2032;
 
 
     public int shareAlertDebugMode = DEBUG_SHARE_ALERT_MODE_NORMAL;
@@ -568,6 +570,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private BlurredFrameLayout searchContainer;
     private ImageView searchCalendarButton;
     private ImageView searchUserButton;
+    private ImageView searchFilterButton;
     private AnimatedTextView searchCountText;
     private AnimatedTextView searchExpandList;
     private AnimatedTextView searchOtherButton;
@@ -601,6 +604,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private boolean searchingFiltered;
     private boolean searching;
     private String searchingQuery;
+    private TLRPC.MessagesFilter searchingType;
     private UndoView undoView;
     private UndoView topUndoView;
     private Bulletin pinBulletin;
@@ -6612,11 +6616,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         ScaleStateListAnimator.apply(searchDownButton, .12f, 2f);
 
         searchUpButton.setOnClickListener(view -> {
-            getMediaDataController().searchMessagesInChat(null, dialog_id, mergeDialogId, classGuid, reversed ? 2 : 1, threadMessageId, searchingUserMessages, searchingChatMessages, searchingReaction);
+            getMediaDataController().searchMessagesInChat(null, dialog_id, mergeDialogId, classGuid, reversed ? 2 : 1, threadMessageId, searchingUserMessages, searchingChatMessages, searchingReaction, searchingType);
             showMessagesSearchListView(false);
         });
         searchDownButton.setOnClickListener(view -> {
-            getMediaDataController().searchMessagesInChat(null, dialog_id, mergeDialogId, classGuid, reversed ? 1 : 2, threadMessageId, searchingUserMessages, searchingChatMessages, searchingReaction);
+            getMediaDataController().searchMessagesInChat(null, dialog_id, mergeDialogId, classGuid, reversed ? 1 : 2, threadMessageId, searchingUserMessages, searchingChatMessages, searchingReaction, searchingType);
             showMessagesSearchListView(false);
         });
 
@@ -8381,7 +8385,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     updateSearchUpDownButtonVisibility(true);
                     updatePagedownButtonVisibility(true);
                     searchingQuery = searchItem.getSearchField().getText().toString();
-                    getMediaDataController().searchMessagesInChat(searchingQuery, dialog_id, mergeDialogId, classGuid, 0, threadMessageId, false, searchingUserMessages, searchingChatMessages, !TextUtils.isEmpty(searchingQuery) || searchingReaction != null, searchingReaction);
+                    getMediaDataController().searchMessagesInChat(searchingQuery, dialog_id, mergeDialogId, classGuid, 0, threadMessageId, false, searchingUserMessages, searchingChatMessages, !TextUtils.isEmpty(searchingQuery) || searchingReaction != null, searchingReaction, searchingType);
                     AndroidUtilities.hideKeyboard(searchItem.getSearchField());
                     return true;
                 }
@@ -8503,7 +8507,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     public void hitSearch() {
         searchWas = true;
         updateSearchButtons(0, 0, -1);
-        getMediaDataController().searchMessagesInChat(searchingQuery, dialog_id, mergeDialogId, classGuid, 0, threadMessageId, searchingUserMessages, searchingChatMessages, searchingReaction);
+        getMediaDataController().searchMessagesInChat(searchingQuery, dialog_id, mergeDialogId, classGuid, 0, threadMessageId, searchingUserMessages, searchingChatMessages, searchingReaction, searchingType);
         searchItemVisible = searching = !TextUtils.isEmpty(searchingQuery) || searchingReaction != null;
         updateBottomOverlay();
         updateSearchUpDownButtonVisibility(true);
@@ -9541,6 +9545,17 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         tagSelector.setTranslationY(contentPanTranslation + (actionBarSearchTags != null ? actionBarSearchTags.getCurrentHeight() : 0));
     }
 
+    private ArrayList<Pair<String, TLRPC.MessagesFilter>> searchFilters = new ArrayList<>() {{
+        add(Pair.create(LocaleController.getString(R.string.FilterAllChatsShort), null));
+        add(Pair.create(LocaleController.getString(R.string.SharedMediaTab2), new TLRPC.TL_inputMessagesFilterPhotoVideo()));
+        add(Pair.create(LocaleController.getString(R.string.SharedVoiceTab2), new TLRPC.TL_inputMessagesFilterVoice()));
+        add(Pair.create(LocaleController.getString(R.string.SharedFilesTab2), new TLRPC.TL_inputMessagesFilterDocument()));
+        add(Pair.create(LocaleController.getString(R.string.SharedMusicTab2), new TLRPC.TL_inputMessagesFilterMusic()));
+        add(Pair.create(LocaleController.getString(R.string.SharedGIFsTab2), new TLRPC.TL_inputMessagesFilterGif()));
+        add(Pair.create(LocaleController.getString(R.string.ChatLocation), new TLRPC.TL_inputMessagesFilterGeo()));
+        add(Pair.create(LocaleController.getString(R.string.Mention), new TLRPC.TL_inputMessagesFilterMyMentions()));
+    }};
+
     private void createSearchContainer() {
         if (searchContainer != null || getContext() == null) {
             return;
@@ -9566,6 +9581,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                         leftMargin += 48;
                     }
                     if (searchUserButton != null && searchUserButton.getVisibility() != GONE) {
+                        leftMargin += 48;
+                    }
+                    if (searchFilterButton != null && searchFilterButton.getVisibility() != GONE) {
                         leftMargin += 48;
                     }
                     ((MarginLayoutParams) child.getLayoutParams()).leftMargin = AndroidUtilities.dp(leftMargin);
@@ -9644,6 +9662,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
                 searchCalendarButton.setVisibility(View.GONE);
                 searchUserButton.setVisibility(View.GONE);
+                searchFilterButton.setVisibility(View.GONE);
                 searchingForUser = true;
                 searchingUserMessages = null;
                 searchingChatMessages = null;
@@ -9675,6 +9694,39 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         });
         searchCalendarButton.setContentDescription(LocaleController.getString("JumpToDate", R.string.JumpToDate));
 
+        searchFilterButton = new ImageView(getContext());
+        searchFilterButton.setScaleType(ImageView.ScaleType.CENTER);
+        searchFilterButton.setImageResource(R.drawable.ic_filter_list);
+        searchFilterButton.setColorFilter(new PorterDuffColorFilter(getThemedColor(Theme.key_chat_searchPanelIcons), PorterDuff.Mode.MULTIPLY));
+        searchFilterButton.setBackground(Theme.createSelectorDrawable(getThemedColor(Theme.key_actionBarActionModeDefaultSelector), 1));
+        searchContainer.addView(searchFilterButton, LayoutHelper.createFrame(48, 48, Gravity.LEFT | Gravity.TOP, searchUserButton != null ? (96 - 2.66f) : 48, 0, 0, 0));
+        searchFilterButton.setOnClickListener(view -> {
+            if (getParentActivity() == null) {
+                return;
+            }
+
+            var filterPopup = ItemOptions.makeOptions(contentView, themeDelegate, searchFilterButton);
+            filterPopup.setDimAlpha(0);
+            for (var filter : searchFilters) {
+                filterPopup.add(0, filter.first, () -> {
+                    if (searchingType == filter.second) {
+                        return;
+                    }
+                    searchingType = filter.second;
+                    getMediaDataController().clearFoundMessageObjects();
+                    updateSearchButtons(0, 0, -1);
+                    updateSearchUpDownButtonVisibility(true);
+                    updatePagedownButtonVisibility(true);
+                    searchingQuery = searchItem.getSearchField().getText().toString();
+                    getMediaDataController().searchMessagesInChat(searchingQuery, dialog_id, mergeDialogId, classGuid, 0, threadMessageId, searchingUserMessages, searchingChatMessages, searchingReaction, searchingType);
+                });
+                if (searchingType == filter.second) {
+                    filterPopup.putCheck();
+                }
+            }
+            filterPopup.show();
+        });
+        searchFilterButton.setContentDescription(LocaleController.getString("JumpToDate", R.string.JumpToDate));
     }
 
     private void showSearchShowOther(boolean show) {
@@ -10263,7 +10315,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         mentionContainer.getAdapter().searchUsernameOrHashtag(null, 0, null, false, true);
         searchItem.setSearchFieldHint(null);
         searchItem.clearSearchText();
-        getMediaDataController().searchMessagesInChat(searchingQuery = "", dialog_id, mergeDialogId, classGuid, 0, threadMessageId, searchingUserMessages, searchingChatMessages, searchingReaction);
+        getMediaDataController().searchMessagesInChat(searchingQuery = "", dialog_id, mergeDialogId, classGuid, 0, threadMessageId, searchingUserMessages, searchingChatMessages, searchingReaction, searchingType = null);
     }
 
     private void updateTranslateItemVisibility() {
@@ -28201,6 +28253,14 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                     items.add(LocaleController.getString("SaveToGallery", R.string.SaveToGallery));
                                     options.add(nkbtn_stickerdl);
                                     icons.add(R.drawable.msg_gallery);
+                                    if (NaConfig.INSTANCE.getShowCopyPhoto().Bool()) {
+                                        items.add(LocaleController.getString("CopyPhotoAsSticker", R.string.CopyPhotoAsSticker));
+                                        icons.add(R.drawable.msg_copy);
+                                        options.add(nkbtn_sticker_copy);
+                                        items.add(LocaleController.getString("CopyPhoto", R.string.CopyPhoto));
+                                        icons.add(R.drawable.msg_copy);
+                                        options.add(nkbtn_sticker_copy_png);
+                                    }
                                 }
                                 items.add(LocaleController.getString("AddToStickers", R.string.AddToStickers));
                                 options.add(OPTION_ADD_TO_STICKERS_OR_MASKS);
@@ -31880,7 +31940,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if (searchItem != null) {
             searchItem.setSearchFieldText(text, false);
         }
-        getMediaDataController().searchMessagesInChat(searchingQuery = (text == null ? "" : text), dialog_id, mergeDialogId, classGuid, 0, threadMessageId, false, searchingUserMessages, searchingChatMessages, !TextUtils.isEmpty(text), searchingReaction);
+        getMediaDataController().searchMessagesInChat(searchingQuery = (text == null ? "" : text), dialog_id, mergeDialogId, classGuid, 0, threadMessageId, false, searchingUserMessages, searchingChatMessages, !TextUtils.isEmpty(text), searchingReaction, searchingType = null);
         updatePinnedMessageView(true);
     }
 
@@ -34537,6 +34597,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (searchUserButton != null) {
                 searchUserButton.setVisibility(View.VISIBLE);
             }
+            if (searchFilterButton != null) {
+                searchFilterButton.setVisibility(View.VISIBLE);
+            }
             if (searchingForUser) {
                 mentionContainer.getAdapter().searchUsernameOrHashtag(null, 0, null, false, true);
                 searchingForUser = false;
@@ -34696,7 +34759,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         public void onSearchPressed(EditText editText) {
             searchWas = true;
             updateSearchButtons(0, 0, -1);
-            getMediaDataController().searchMessagesInChat(searchingQuery = editText.getText().toString(), dialog_id, mergeDialogId, classGuid, 0, threadMessageId, searchingUserMessages, searchingChatMessages, searchingReaction);
+            getMediaDataController().searchMessagesInChat(searchingQuery = editText.getText().toString(), dialog_id, mergeDialogId, classGuid, 0, threadMessageId, searchingUserMessages, searchingChatMessages, searchingReaction, searchingType);
         }
 
         @Override
@@ -34726,6 +34789,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 				searchItem.setSearchFieldHint(isSupportedTags() ? LocaleController.getString("SavedTagSearchHint", R.string.SavedTagSearchHint) : LocaleController.getString("Search", R.string.Search));
                 searchCalendarButton.setVisibility(View.VISIBLE);
                 searchUserButton.setVisibility(View.VISIBLE);
+                searchFilterButton.setVisibility(View.VISIBLE);
                 searchingUserMessages = null;
                 searchingChatMessages = null;
             }
@@ -37400,6 +37464,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         themeDescriptions.add(new ThemeDescription(replyCloseImageView, ThemeDescription.FLAG_IMAGECOLOR, null, null, null, null, Theme.key_chat_replyPanelClose));
         themeDescriptions.add(new ThemeDescription(null, 0, null, null, null, selectedBackgroundDelegate, Theme.key_chat_replyPanelName));
 
+        themeDescriptions.add(new ThemeDescription(searchFilterButton, ThemeDescription.FLAG_IMAGECOLOR, null, null, null, null, Theme.key_chat_searchPanelIcons));
+        themeDescriptions.add(new ThemeDescription(searchFilterButton, ThemeDescription.FLAG_BACKGROUNDFILTER | ThemeDescription.FLAG_DRAWABLESELECTEDSTATE, null, null, null, null, Theme.key_actionBarActionModeDefaultSelector));
         themeDescriptions.add(new ThemeDescription(searchCalendarButton, ThemeDescription.FLAG_IMAGECOLOR, null, null, null, null, Theme.key_chat_searchPanelIcons));
         themeDescriptions.add(new ThemeDescription(searchCalendarButton, ThemeDescription.FLAG_BACKGROUNDFILTER | ThemeDescription.FLAG_DRAWABLESELECTEDSTATE, null, null, null, null, Theme.key_actionBarActionModeDefaultSelector));
         themeDescriptions.add(new ThemeDescription(searchUserButton, ThemeDescription.FLAG_IMAGECOLOR, null, null, null, null, Theme.key_chat_searchPanelIcons));
@@ -39156,6 +39222,22 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     return;
                 }
                 getMessageHelper().saveStickerToGallery(getParentActivity(), selectedObject);
+                break;
+            }
+            case nkbtn_sticker_copy: {
+                getMessageHelper().addStickerToClipboard(selectedObject.getDocument(), () -> {
+                    if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
+                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                    }
+                });
+                break;
+            }
+            case nkbtn_sticker_copy_png: {
+                getMessageHelper().addStickerToClipboardAsPNG(selectedObject.getDocument(), () -> {
+                    if (BulletinFactory.canShowBulletin(ChatActivity.this)) {
+                        BulletinFactory.of(this).createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                    }
+                });
                 break;
             }
             case nkbtn_translate: {

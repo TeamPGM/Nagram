@@ -83,6 +83,7 @@ import org.telegram.ui.Components.AlertsCreator;
 import org.telegram.ui.Components.AnimatedEmojiDrawable;
 import org.telegram.ui.Components.AnimatedEmojiSpan;
 import org.telegram.ui.Components.BackupImageView;
+import org.telegram.ui.Components.BulletinFactory;
 import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.EmojiPacksAlert;
 import org.telegram.ui.Components.EmojiView;
@@ -103,6 +104,7 @@ import java.util.List;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.ui.MessageHelper;
 import tw.nekomimi.nekogram.utils.VibrateUtil;
+import xyz.nextalone.nagram.NaConfig;
 
 public class ContentPreviewViewer {
 
@@ -141,7 +143,7 @@ public class ContentPreviewViewer {
 
         }
 
-        default void newStickerPackSelected(CharSequence name, String emoji) {
+        default void newStickerPackSelected(CharSequence short_name, CharSequence name, String emoji) {
 
         }
 
@@ -251,6 +253,8 @@ public class ContentPreviewViewer {
 
     private final static int nkbtn_send_without_sound = 100;
     private final static int nkbtn_stickerdl = 110;
+    private final static int nkbtn_sticker_copy = 111;
+    private final static int nkbtn_sticker_copy_png = 112;
 
     private static TextPaint textPaint;
 
@@ -352,11 +356,13 @@ public class ContentPreviewViewer {
                         reactionsWindow.dismiss();
                     }
                     if (stickerSetCovered instanceof TLRPC.TL_stickerSetNoCovered) {
-                        StickersDialogs.showNameEditorDialog(null, resourcesProvider, containerView.getContext(), arg -> {
-                            delegate.newStickerPackSelected(arg, reactionsLayout.getSelectedEmoji());
-                            if (popupWindow != null) {
-                                popupWindow.dismiss();
-                            }
+                        StickersDialogs.showShortNameEditorDialog(resourcesProvider, containerView.getContext(), short_name -> {
+                            StickersDialogs.showNameEditorDialog(null, resourcesProvider, containerView.getContext(), arg -> {
+                                delegate.newStickerPackSelected(short_name, arg, reactionsLayout.getSelectedEmoji());
+                                if (popupWindow != null) {
+                                    popupWindow.dismiss();
+                                }
+                            });
                         });
                         return;
                     }
@@ -487,6 +493,14 @@ public class ContentPreviewViewer {
                     items.add(LocaleController.getString("SaveToGallery", R.string.SaveToGallery));
                     icons.add(R.drawable.msg_gallery);
                     actions.add(nkbtn_stickerdl);
+                    if (NaConfig.INSTANCE.getShowCopyPhoto().Bool()) {
+                        items.add(LocaleController.getString("CopyPhotoAsSticker", R.string.CopyPhotoAsSticker));
+                        icons.add(R.drawable.msg_copy);
+                        actions.add(nkbtn_sticker_copy);
+                        items.add(LocaleController.getString("CopyPhoto", R.string.CopyPhoto));
+                        icons.add(R.drawable.msg_copy);
+                        actions.add(nkbtn_sticker_copy_png);
+                    }
                 }
                 if (!MessageObject.isMaskDocument(currentDocument) && (inFavs || MediaDataController.getInstance(currentAccount).canAddStickerToFavorites() && MessageObject.isStickerHasSet(currentDocument))) {
                     items.add(inFavs ? LocaleController.getString("DeleteFromFavorites", R.string.DeleteFromFavorites) : LocaleController.getString("AddToFavorites", R.string.AddToFavorites));
@@ -508,9 +522,11 @@ public class ContentPreviewViewer {
                             icons.add(R.drawable.msg_edit);
                             actions.add(7);
                         }
-                        items.add(LocaleController.getString(R.string.DeleteSticker));
-                        icons.add(R.drawable.msg_delete);
-                        actions.add(8);
+                        if (delegate != null) {
+                            items.add(LocaleController.getString(R.string.DeleteSticker));
+                            icons.add(R.drawable.msg_delete);
+                            actions.add(8);
+                        }
                     }
                 }
 
@@ -553,6 +569,14 @@ public class ContentPreviewViewer {
                             delegate.remove(importingSticker);
                         } else if (actions.get(which) == nkbtn_stickerdl) {
                             MessageHelper.getInstance(currentAccount).saveStickerToGallery(parentActivity, currentDocument);
+                        } else if (actions.get(which) == nkbtn_sticker_copy) {
+                            MessageHelper.getInstance(currentAccount).addStickerToClipboard(currentDocument, () -> {
+                                BulletinFactory.global().createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                            });
+                        } else if (actions.get(which) == nkbtn_sticker_copy_png) {
+                            MessageHelper.getInstance(currentAccount).addStickerToClipboardAsPNG(currentDocument, () -> {
+                                BulletinFactory.global().createCopyBulletin(LocaleController.getString("PhotoCopied", R.string.PhotoCopied)).show();
+                            });
                         } else if (actions.get(which) == 7) {
                             delegate.editSticker(currentDocument);
                         } else if (actions.get(which) == 8) {
