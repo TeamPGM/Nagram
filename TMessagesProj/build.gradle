@@ -195,7 +195,7 @@ android {
     sourceSets {
 
         main {
-            assets.srcDirs = ["src/main/assets", "src/emojis/twitter"]
+            assets.srcDirs = ["src/main/assets"]
         }
 
         debug {
@@ -302,6 +302,8 @@ dependencies {
     implementation "com.google.firebase:firebase-messaging:$fcmVersion"
     implementation "com.google.firebase:firebase-crashlytics:$crashlyticsVersion"
     implementation "com.google.android.play:core:$playCoreVersion"
+
+    implementation 'com.android.billingclient:billing:5.1.0'
 
     testImplementation "junit:junit:4.13.2"
     testImplementation "androidx.test:core:1.5.0"
