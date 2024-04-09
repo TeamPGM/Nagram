@@ -241,6 +241,7 @@ import org.telegram.ui.Components.Premium.GiftPremiumBottomSheet;
 import org.telegram.ui.Components.Premium.LimitReachedBottomSheet;
 import org.telegram.ui.Components.Premium.PremiumFeatureBottomSheet;
 import org.telegram.ui.Components.Premium.PremiumGradient;
+import org.telegram.ui.Components.Premium.PremiumNotAvailableBottomSheet;
 import org.telegram.ui.Components.Premium.PremiumPreviewBottomSheet;
 import org.telegram.ui.Components.Premium.ProfilePremiumCell;
 import org.telegram.ui.Components.Premium.boosts.BoostRepository;
@@ -4037,7 +4038,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             } else if (position == businessRow) {
                 presentFragment(new PremiumPreviewFragment(PremiumPreviewFragment.FEATURES_BUSINESS, "settings"));
             } else if (position == premiumGiftingRow) {
-                UserSelectorBottomSheet.open(0, BirthdayController.getInstance(currentAccount).getState());
+//                UserSelectorBottomSheet.open(0, BirthdayController.getInstance(currentAccount).getState());
+                showDialog(new PremiumNotAvailableBottomSheet(this));
+                // NekoX: remove Google billing
             } else if (position == bizHoursRow) {
                 hoursExpanded = !hoursExpanded;
                 saveScrollPosition();
@@ -5061,7 +5064,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 cameraDrawable = new RLottieDrawable(R.raw.camera_outline, String.valueOf(R.raw.camera_outline), AndroidUtilities.dp(56), AndroidUtilities.dp(56), false, null);
                 cellCameraDrawable = new RLottieDrawable(R.raw.camera_outline, R.raw.camera_outline + "_cell", AndroidUtilities.dp(42), AndroidUtilities.dp(42), false, null);
 
-                writeButton.setImageResource(R.drawable.msg_edit);
+                writeButton.setAnimation(cameraDrawable);
                 writeButton.setContentDescription(LocaleController.getString("AccDescrChangeProfilePicture", R.string.AccDescrChangeProfilePicture));
                 writeButton.setPadding(AndroidUtilities.dp(2), 0, 0, AndroidUtilities.dp(2));
             } else {
@@ -8845,7 +8848,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     // disable send last logs
                     clearLogsRow = rowCount++;
                 }
-                if (BuildVars.DEBUG_VERSION) {
+                // na: disable switch backend button
+                if (BuildVars.DEBUG_VERSION && false) {
                     switchBackendRow = rowCount++;
                 }
                 versionRow = rowCount++;
