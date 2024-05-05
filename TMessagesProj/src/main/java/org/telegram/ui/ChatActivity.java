@@ -10265,6 +10265,31 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 dismiss(true);
                 chatActivityEnterView.getSendButton().callOnClick();
             }
+
+            @Override
+            protected void sendWebpageMedia(boolean notify, int scheduleDate) {
+                if (checkSlowModeAlert()) {
+                    SendMessagesHelper.SendMessageParams params;
+                    if (messagePreviewParams.webpage.document != null) {
+                        params = SendMessagesHelper.SendMessageParams.of((TLRPC.TL_document) messagePreviewParams.webpage.document, null, null, dialog_id, replyingMessageObject, getThreadMessage(), null, null, null, null, notify, scheduleDate, 0, messagePreviewParams.webpage, null, false);
+                    } else {
+                        params = SendMessagesHelper.SendMessageParams.of((TLRPC.TL_photo) messagePreviewParams.webpage.photo, null, dialog_id, replyingMessageObject, getThreadMessage(), null, null, null, null, notify, scheduleDate, 0, messagePreviewParams.webpage, false);
+                    }
+                    params.quick_reply_shortcut = quickReplyShortcut;
+                    params.quick_reply_shortcut_id = getQuickReplyId();
+                    getSendMessagesHelper().sendMessage(params);
+                    dismiss(true);
+                    if (threadMessageId == 0 || isTopic) {
+                        if (isTopic) {
+                            replyingMessageObject = threadMessageObject;
+                        } else {
+                            replyingMessageObject = null;
+                        }
+                        replyingQuote = null;
+                        chatActivityEnterView.setReplyingMessageObject(null, null);
+                    }
+                }
+            }
         };
         messagePreviewParams.attach(forwardingPreviewView);
         TLRPC.Peer defPeer = chatInfo != null ? chatInfo.default_send_as : null;
@@ -32981,7 +33006,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private void processExternalUrl(int type, String url, CharacterStyle span, ChatMessageCell cell, boolean forceAlert) {
         try {
             String host = AndroidUtilities.getHostAuthority(url);
-            if ((currentEncryptedChat == null || getMessagesController().secretWebpagePreview == 1) && getMessagesController().authDomains.contains(host)) {
+            if ((currentEncryptedChat == null || getMessagesController().secretWebpagePreview == 1) && getMessagesController().authDomains.contains(host) && !NaConfig.INSTANCE.getDisableAutoWebLogin().Bool()) {
                 getSendMessagesHelper().requestUrlAuth(url, this, type == 0 || type == 2);
                 return;
             }
