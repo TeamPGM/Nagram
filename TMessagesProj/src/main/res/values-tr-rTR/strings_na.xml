@@ -140,4 +140,10 @@
     <string name="DisablePreviewVideoSoundShortcut">Önizleme videosu ses kısayolunu devre dışı bırak</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Önizleme video sesini etkinleştirmek için ses seviyesi tuşlarını devre dışı bırakın</string>
     <string name="DisableAutoWebLogin">Disable auto web login</string>
+    <string name="PreviewSendPhoto">Send Photo</string>
+    <string name="PreviewSendVideo">Send Video</string>
+    <string name="PreviewSendFile">Send File</string>
+    <string name="SentryAnalytics">Sentry Crash Report</string>
+    <string name="UnblockDeleted">Unblock Deleted Users</string>
+    <string name="UnblockDeletedWarn">Are you sure you want to unblock **all deleted users**?</string>
 </resources>

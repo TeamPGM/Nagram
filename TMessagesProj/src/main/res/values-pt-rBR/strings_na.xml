@@ -140,4 +140,10 @@
     <string name="DisablePreviewVideoSoundShortcut">Desativar pré-visualização de atalho sonoro de vídeo</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Desativar as teclas de volume para habilitar a visualização do som de vídeo</string>
     <string name="DisableAutoWebLogin">Desativar o login via web automático</string>
+    <string name="PreviewSendPhoto">Enviar Foto</string>
+    <string name="PreviewSendVideo">Enviar vídeo</string>
+    <string name="PreviewSendFile">Enviar Arquivo</string>
+    <string name="SentryAnalytics">Relatório de erro sentinela</string>
+    <string name="UnblockDeleted">Desbloquear usuários excluídos</string>
+    <string name="UnblockDeletedWarn">Você tem certeza que deseja desbloquear **todos os usuários deletados**?</string>
 </resources>

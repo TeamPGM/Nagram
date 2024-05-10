@@ -140,4 +140,10 @@
     <string name="DisablePreviewVideoSoundShortcut">Wyłącz podgląd skrótu dźwięku wideo</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Wyłącz przyciski głośności, aby włączyć podgląd dźwięku wideo</string>
     <string name="DisableAutoWebLogin">Wyłącz automatyczne logowanie</string>
+    <string name="PreviewSendPhoto">Wyślij zdjęcie</string>
+    <string name="PreviewSendVideo">Wyślij wideo</string>
+    <string name="PreviewSendFile">Wyślij plik</string>
+    <string name="SentryAnalytics">Raport awarii wpisu</string>
+    <string name="UnblockDeleted">Odblokuj usuniętych użytkowników</string>
+    <string name="UnblockDeletedWarn">Czy na pewno chcesz odblokować **wszystkich usuniętych użytkowników**?</string>
 </resources>

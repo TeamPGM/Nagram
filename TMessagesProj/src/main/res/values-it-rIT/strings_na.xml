@@ -140,4 +140,10 @@
     <string name="DisablePreviewVideoSoundShortcut">Disabilita la scorciatoia audio anteprima video</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Disabilita i tasti volume per abilitare l\'anteprima del suono video</string>
     <string name="DisableAutoWebLogin">Disabilita il login automatico</string>
+    <string name="PreviewSendPhoto">Invia Foto</string>
+    <string name="PreviewSendVideo">Invia Video</string>
+    <string name="PreviewSendFile">Invia File</string>
+    <string name="SentryAnalytics">Rapporto Crash Sentry</string>
+    <string name="UnblockDeleted">Sblocca Utenti Eliminati</string>
+    <string name="UnblockDeletedWarn">Sei sicuro di voler sbloccare **tutti gli utenti eliminati**?</string>
 </resources>

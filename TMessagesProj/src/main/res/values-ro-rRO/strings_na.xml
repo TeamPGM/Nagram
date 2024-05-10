@@ -140,4 +140,10 @@
     <string name="DisablePreviewVideoSoundShortcut">Dezactivează scurtătură sunet previzualizare</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Dezactivează tastele de volum pentru a activa previzualizarea sunetului video</string>
     <string name="DisableAutoWebLogin">Dezactivează autentificarea automată pe web</string>
+    <string name="PreviewSendPhoto">Trimite fotografie</string>
+    <string name="PreviewSendVideo">Trimite videoclip</string>
+    <string name="PreviewSendFile">Trimite fișier</string>
+    <string name="SentryAnalytics">Raport de defecțiuni la intrare</string>
+    <string name="UnblockDeleted">Deblochează Utilizatorii șterși</string>
+    <string name="UnblockDeletedWarn">Ești sigur că vrei să deblochezi **toți utilizatorii șterși**?</string>
 </resources>
