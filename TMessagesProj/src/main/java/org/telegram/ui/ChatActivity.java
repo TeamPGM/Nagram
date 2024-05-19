@@ -284,6 +284,7 @@ import tw.nekomimi.nekogram.BackButtonMenuRecent;
 import tw.nekomimi.nekogram.DialogConfig;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.NekoXConfig;
+import tw.nekomimi.nekogram.helpers.AyuFilter;
 import tw.nekomimi.nekogram.helpers.remote.EmojiHelper;
 import tw.nekomimi.nekogram.helpers.remote.PagePreviewRulesHelper;
 import tw.nekomimi.nekogram.parts.MessageTransKt;
@@ -30639,6 +30640,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             case OPTION_FORWARD: {
                 noForwardQuote = false; //fuck
+                if (messagePreviewParams != null) {
+                    messagePreviewParams.setHideForwardSendersName(noForwardQuote);
+                }
                 forwardingMessage = selectedObject;
                 forwardingMessageGroup = selectedObjectGroup;
                 Bundle args = new Bundle();
@@ -33846,6 +33850,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 });
             } else if (viewType == 4) {
                 view = new ChatLoadingCell(mContext, contentView, themeDelegate);
+            } else if (viewType == -1000) {
+                view = new View(mContext);
             }
             view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
             return new RecyclerListView.Holder(view);
@@ -34328,7 +34334,21 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else {
                     messages = ChatActivity.this.messages;
                 }
-                return messages.get(position - messagesStartRow).contentType;
+
+                var msg = messages.get(position - messagesStartRow);
+
+                // --- AyuGram hook
+                if (NaConfig.INSTANCE.getRegexFiltersEnabled().Bool() && (NaConfig.INSTANCE.getRegexFiltersEnableInChats().Bool() || ChatObject.isChannel(currentChat))) {
+                    var group = getGroup(msg.getGroupId());
+                    var msgToCheck = group == null ? msg : group.findPrimaryMessageObject();
+
+                    if (AyuFilter.isFiltered(msgToCheck, group)) {
+                        return -1000;
+                    }
+                }
+                // --- AyuGram hook
+
+                return msg.contentType;
             } else if (position == botInfoRow) {
                 return 3;
             }
@@ -39043,6 +39063,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         // should hide shit action bar after done
         if (id == nkbtn_forward_noquote) {
             noForwardQuote = id == nkbtn_forward_noquote;
+            if (messagePreviewParams != null) {
+                messagePreviewParams.setHideForwardSendersName(noForwardQuote);
+            }
             openForward(true);
         } else if (id == nkactionbarbtn_reply) {
             MessageObject messageObject = null;
@@ -39268,6 +39291,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             case nkbtn_forward_noquote: {
                 noForwardQuote = true;
+                if (messagePreviewParams != null) {
+                    messagePreviewParams.setHideForwardSendersName(noForwardQuote);
+                }
                 forwardingMessage = selectedObject;
                 forwardingMessageGroup = selectedObjectGroup;
                 Bundle args = new Bundle();
