@@ -3,8 +3,6 @@ name: "Debug Build"
 # Controls when the action will run.
 on:
   push:
-    branches:
-      - dev
     paths-ignore:
       - '**.md'
       - '.github/**'
