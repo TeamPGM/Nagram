@@ -15,7 +15,7 @@ apply plugin: "io.sentry.android.gradle"
 //}
 
 def verName = "11.0.0"
-def verCode = 1191
+def verCode = 1192
 
 
 def officialVer = "11.0.0"
