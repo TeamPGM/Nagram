@@ -230,6 +230,7 @@ import org.telegram.ui.Components.DotDividerSpan;
 import org.telegram.ui.Components.EditTextBoldCursor;
 import org.telegram.ui.Components.EmojiPacksAlert;
 import org.telegram.ui.Components.EmptyStubSpan;
+import org.telegram.ui.Components.FiltersListBottomSheet;
 import org.telegram.ui.Components.FloatingDebug.FloatingDebugController;
 import org.telegram.ui.Components.Forum.ForumUtilities;
 import org.telegram.ui.Components.FragmentContextView;
@@ -356,7 +357,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private SimpleTextView idTextView;
     private RLottieImageView writeButton;
     private AnimatorSet writeButtonAnimation;
-    //    private AnimatorSet qrItemAnimation;
+    private AnimatorSet qrItemAnimation;
     private Drawable lockIconDrawable;
     private final Drawable[] verifiedDrawable = new Drawable[2];
     private final Drawable[] premiumStarDrawable = new Drawable[2];
@@ -438,7 +439,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private ActionBarMenuSubItem linkItem;
     private ActionBarMenuSubItem setUsernameItem;
     private ImageView ttlIconView;
-    //    private ActionBarMenuItem qrItem;
+    private ActionBarMenuItem qrItem;
     private ActionBarMenuSubItem autoDeleteItem;
     AutoDeletePopupWrapper autoDeletePopupWrapper;
     protected float headerShadowAlpha = 1.0f;
@@ -568,7 +569,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private final static int delete_avatar = 35;
     private final static int add_photo = 36;
     private final static int qr_button = 37;
-//    private final static int gift_premium = 38;
+    private final static int gift_premium = 38;
     private final static int channel_stories = 39;
     private final static int edit_color = 40;
     private final static int edit_profile = 41;
@@ -580,6 +581,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private final static int event_log = 102;
     private final static int message_filter = 103;
     private final static int clear_cache = 104;
+    private final static int add_to_folder = 105;
 
     private Rect rect = new Rect();
 
@@ -1746,7 +1748,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         }
 
         private void updateAvatarItemsInternal() {
-            /*if (otherItem == null || avatarsViewPager == null) {
+            if (otherItem == null || avatarsViewPager == null) {
                 return;
             }
             if (isPulledDown) {
@@ -1758,7 +1760,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     otherItem.showSubItem(set_as_main);
                     otherItem.hideSubItem(add_photo);
                 }
-            }*/
+            }
         }
 
         private void updateAvatarItems() {
@@ -1813,7 +1815,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             }
             overlaysView.invalidate();
             final float textWidth = textPaint.measureText(getCurrentTitle());
-            indicatorRect.right = getMeasuredWidth() - AndroidUtilities.dp(54f);
+            indicatorRect.right = getMeasuredWidth() - AndroidUtilities.dp(54f) - (qrItem != null ? AndroidUtilities.dp(48) : 0);
             indicatorRect.left = indicatorRect.right - (textWidth + AndroidUtilities.dpf2(16f));
             indicatorRect.top = (actionBar.getOccupyStatusBar() ? AndroidUtilities.statusBarHeight : 0) + AndroidUtilities.dp(15f);
             indicatorRect.bottom = indicatorRect.top + AndroidUtilities.dp(26);
@@ -2579,9 +2581,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     presentFragment(StatisticActivity.create(chat, false));
                 } else if (id == view_discussion) {
                     openDiscussion();
-                } /*else if (id == gift_premium) {
+                } else if (id == gift_premium) {
                     showDialog(new GiftSheet(getContext(), currentAccount, userId, null, null));
-                } */ else if (id == channel_stories) {
+                } else if (id == channel_stories) {
                     Bundle args = new Bundle();
                     args.putInt("type", MediaActivity.TYPE_ARCHIVED_CHANNEL_STORIES);
                     args.putLong("dialog_id", -chatId);
@@ -2792,17 +2794,19 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 } else if (id == add_photo) {
                     onWriteButtonClick();
                 } else if (id == qr_button) {
-//                    if (qrItem != null && qrItem.getAlpha() > 0) {
-//                        Bundle args = new Bundle();
-//                        args.putLong("chat_id", chatId);
-//                        args.putLong("user_id", userId);
-//                        presentFragment(new QrActivity(args));
-//                    }
+                    if (qrItem != null && qrItem.getAlpha() > 0) {
+                        Bundle args = new Bundle();
+                        args.putLong("chat_id", chatId);
+                        args.putLong("user_id", userId);
+                        presentFragment(new QrActivity(args));
+                    }
                 } else if (id == clear_cache) {
                     Bundle args = new Bundle();
                     args.putLong("dialog_id", userId != 0 ? dialogId : -chatId);
                     CacheControlActivity fragment = new CacheControlActivity(args);
                     presentFragment(fragment);
+                } else if (id == add_to_folder) {
+                    showAddCurrentChatToFolderSheet();
                 }
             }
         });
@@ -2950,7 +2954,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     allowPullingDown = true;
                     isPulledDown = true;
                     NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.needCheckSystemBarColors, true);
-                    /*if (otherItem != null) {
+                    if (otherItem != null) {
                         if (!getMessagesController().isChatNoForwards(currentChat)) {
                             otherItem.showSubItem(gallery_menu_save);
                         } else {
@@ -2961,7 +2965,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                             otherItem.showSubItem(delete_avatar);
                             otherItem.hideSubItem(logout);
                         }
-                    }*/
+                    }
                     currentExpanAnimatorFracture = 1.0f;
 
                     int paddingTop;
@@ -3075,10 +3079,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     wasPortrait = portrait;
                 }
 
-//                if (searchItem != null && qrItem != null) {
-//                    float translation = AndroidUtilities.dp(48) * currentExpandAnimatorValue;
-//                   // qrItem.setTranslationX(translation);
-//                }
+                if (searchItem != null && qrItem != null) {
+                    float translation = AndroidUtilities.dp(48) * currentExpandAnimatorValue;
+                   // qrItem.setTranslationX(translation);
+                }
             }
 
             @Override
@@ -3430,9 +3434,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 editItem.setVisibility(expanded || !editItemVisible ? GONE : INVISIBLE);
                 eventLogItem.setVisibility(expanded || !eventLogItemVisible ? GONE : INVISIBLE);
                 otherItem.setVisibility(expanded ? GONE : INVISIBLE);
-//                if (qrItem != null) {
-//                    qrItem.setVisibility(expanded ? GONE : INVISIBLE);
-//                }
+                if (qrItem != null) {
+                    qrItem.setVisibility(expanded ? GONE : INVISIBLE);
+                }
                 updateStoriesViewBounds(false);
             }
 
@@ -3533,14 +3537,14 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 
         ActionBarMenu menu = actionBar.createMenu();
 
-//        if (userId == getUserConfig().clientUserId && !myProfile) {
-//            qrItem = menu.addItem(qr_button, R.drawable.msg_qr_mini, getResourceProvider());
-//            qrItem.setContentDescription(LocaleController.getString(R.string.GetQRCode));
-//            updateQrItemVisibility(false);
-//            if (ContactsController.getInstance(currentAccount).getPrivacyRules(PRIVACY_RULES_TYPE_ADDED_BY_PHONE) == null) {
-//                ContactsController.getInstance(currentAccount).loadPrivacySettings();
-//            }
-//        }
+        if (userId == getUserConfig().clientUserId && !myProfile) {
+            qrItem = menu.addItem(qr_button, R.drawable.msg_qr_mini, getResourceProvider());
+            qrItem.setContentDescription(LocaleController.getString(R.string.GetQRCode));
+            updateQrItemVisibility(false);
+            if (ContactsController.getInstance(currentAccount).getPrivacyRules(PRIVACY_RULES_TYPE_ADDED_BY_PHONE) == null) {
+                ContactsController.getInstance(currentAccount).loadPrivacySettings();
+            }
+        }
         if (imageUpdater != null && !myProfile) {
             searchItem = menu.addItem(search_button, R.drawable.ic_ab_search).setIsSearchField(true).setActionBarMenuItemSearchListener(new ActionBarMenuItem.ActionBarMenuItemSearchListener() {
 
@@ -5480,14 +5484,13 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 searchItem.setScaleY(1.0f - value);
                 searchItem.setVisibility(View.VISIBLE);
                 searchItem.setClickable(searchItem.getAlpha() > .5f);
-                // NekoX: Move official qrItem into bottom menu when click id
-//                if (qrItem != null) {
-//                    float translation = AndroidUtilities.dp(48) * value;
+                if (qrItem != null) {
+                    float translation = AndroidUtilities.dp(48) * value;
 //                    if (searchItem.getVisibility() == View.VISIBLE)
 //                        translation += AndroidUtilities.dp(48);
-//                    qrItem.setTranslationX(translation);
-//                    avatarsViewPagerIndicatorView.setTranslationX(translation - AndroidUtilities.dp(48));
-//                }
+                    qrItem.setTranslationX(translation);
+                    avatarsViewPagerIndicatorView.setTranslationX(translation - AndroidUtilities.dp(48));
+                }
             }
 
             if (extraHeight > AndroidUtilities.dp(88f) && expandProgress < 0.33f) {
@@ -5952,13 +5955,13 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             searchItem.setScaleY(1.0f - value);
             searchItem.setVisibility(View.VISIBLE);
             searchItem.setClickable(searchItem.getAlpha() > .5f);
-//            if (qrItem != null) {
-//                float translation = AndroidUtilities.dp(48) * value;
-////                    if (searchItem.getVisibility() == View.VISIBLE)
-////                        translation += AndroidUtilities.dp(48);
-//                qrItem.setTranslationX(translation);
-//                avatarsViewPagerIndicatorView.setTranslationX(translation - AndroidUtilities.dp(48));
-//            }
+            if (qrItem != null) {
+                float translation = AndroidUtilities.dp(48) * value;
+//                    if (searchItem.getVisibility() == View.VISIBLE)
+//                        translation += AndroidUtilities.dp(48);
+                qrItem.setTranslationX(translation);
+                avatarsViewPagerIndicatorView.setTranslationX(translation - AndroidUtilities.dp(48));
+            }
         }
 
         if (extraHeight > AndroidUtilities.dp(88f) && expandProgress < 0.33f) {
@@ -7523,9 +7526,16 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                         }
                     }
 
-//                    if (qrItem != null) {
-//
-//                    }
+                    if (qrItem != null) {
+                        updateQrItemVisibility(animated);
+                        if (!animated) {
+                            float translation = AndroidUtilities.dp(48) * qrItem.getAlpha();
+                            qrItem.setTranslationX(translation);
+                            if (avatarsViewPagerIndicatorView != null) {
+                                avatarsViewPagerIndicatorView.setTranslationX(translation - AndroidUtilities.dp(48));
+                            }
+                        }
+                    }
                 }
 
                 if (storyView != null) {
@@ -7548,8 +7558,8 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 
                 if (allowPullingDown && (openingAvatar || expandProgress >= 0.33f)) {
                     if (!isPulledDown) {
-                        /*if (otherItem != null) {
-                            if (!getMessagesController().isChatNoForwards(currentChat)) {
+                        if (otherItem != null) {
+                            if (!getMessagesController().isChatNoForwardsWithOverride(currentChat)) {
                                 otherItem.showSubItem(gallery_menu_save);
                             } else {
                                 otherItem.hideSubItem(gallery_menu_save);
@@ -7561,7 +7571,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                                 otherItem.hideSubItem(set_as_main);
                                 otherItem.hideSubItem(logout);
                             }
-                        }*/
+                        }
                         if (searchItem != null) {
                             searchItem.setEnabled(false);
                         }
@@ -7816,7 +7826,56 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     }
 
     public void updateQrItemVisibility(boolean animated) {
-        // NekoX: removed
+        if (qrItem == null) {
+            return;
+        }
+        boolean setQrVisible = isQrNeedVisible() && Math.min(1f, extraHeight / AndroidUtilities.dp(88f)) > .5f && searchTransitionProgress > .5f;
+        if (animated) {
+            if (setQrVisible != isQrItemVisible) {
+                isQrItemVisible = setQrVisible;
+                if (qrItemAnimation != null) {
+                    qrItemAnimation.cancel();
+                    qrItemAnimation = null;
+                }
+                qrItem.setClickable(isQrItemVisible);
+                qrItemAnimation = new AnimatorSet();
+                if (!(qrItem.getVisibility() == View.GONE && !setQrVisible)) {
+                    qrItem.setVisibility(View.VISIBLE);
+                }
+                if (setQrVisible) {
+                    qrItemAnimation.setInterpolator(new DecelerateInterpolator());
+                    qrItemAnimation.playTogether(
+                            ObjectAnimator.ofFloat(qrItem, View.ALPHA, 1.0f),
+                            ObjectAnimator.ofFloat(qrItem, View.SCALE_Y, 1f),
+                            ObjectAnimator.ofFloat(avatarsViewPagerIndicatorView, View.TRANSLATION_X, -AndroidUtilities.dp(48))
+                    );
+                } else {
+                    qrItemAnimation.setInterpolator(new AccelerateInterpolator());
+                    qrItemAnimation.playTogether(
+                            ObjectAnimator.ofFloat(qrItem, View.ALPHA, 0.0f),
+                            ObjectAnimator.ofFloat(qrItem, View.SCALE_Y, 0f),
+                            ObjectAnimator.ofFloat(avatarsViewPagerIndicatorView, View.TRANSLATION_X, 0)
+                    );
+                }
+                qrItemAnimation.setDuration(150);
+                qrItemAnimation.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        qrItemAnimation = null;
+                    }
+                });
+                qrItemAnimation.start();
+            }
+        } else {
+            if (qrItemAnimation != null) {
+                qrItemAnimation.cancel();
+                qrItemAnimation = null;
+            }
+            isQrItemVisible = setQrVisible;
+            qrItem.setClickable(isQrItemVisible);
+            qrItem.setAlpha(setQrVisible ? 1.0f : 0.0f);
+            qrItem.setVisibility(setQrVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     private void setForegroundImage(boolean secondParent) {
@@ -8188,9 +8247,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
             }
         } else if (id == NotificationCenter.privacyRulesUpdated) {
-//            if (qrItem != null) {
-//                updateQrItemVisibility(true);
-//            }
+            if (qrItem != null) {
+                updateQrItemVisibility(true);
+            }
         } else if (id == NotificationCenter.didReceiveNewMessages) {
             boolean scheduled = (Boolean) args[2];
             if (scheduled) {
@@ -9251,10 +9310,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     setAvatarSectionRow = rowCount++;
                 }
                 numberSectionRow = rowCount++;
-                setUsernameRow = rowCount++;
                 if (!hideNumber) {
                     numberRow = rowCount++;
                 }
+                setUsernameRow = rowCount++;
                 bioRow = rowCount++;
 
                 settingsSectionRow = rowCount++;
@@ -10313,11 +10372,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 });
                 builder.show();
             });
-
-            // NekoX: Move official qrItem into bottom menu when click id
-//        if (qrItem != null) {
-//            updateQrItemVisibility(true);
-//        }
+        }
+        if (qrItem != null) {
+            updateQrItemVisibility(true);
         }
         AndroidUtilities.runOnUIThread(this::updateEmojiStatusEffectPosition);
     }
@@ -10526,14 +10583,11 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     otherItem.addSubItem(delete_contact, R.drawable.msg_delete, LocaleController.getString(R.string.DeleteContact));
                 }
                 if (!UserObject.isDeleted(user) && !isBot && currentEncryptedChat == null && !userBlocked && userId != 333000 && userId != 777000 && userId != 42777) {
-//                    if (!BuildVars.IS_BILLING_UNAVAILABLE && !user.self && !getMessagesController().premiumFeaturesBlocked()) {
-//                        otherItem.addSubItem(gift_premium, R.drawable.msg_gift_premium, LocaleController.getString(R.string.ProfileSendAGift));
-//                    }
+                    if (!BuildVars.IS_BILLING_UNAVAILABLE && !user.self && !getMessagesController().premiumFeaturesBlocked()) {
+                        otherItem.addSubItem(gift_premium, R.drawable.msg_gift_premium, LocaleController.getString(R.string.ProfileSendAGift));
+                    }
                     otherItem.addSubItem(start_secret_chat, R.drawable.msg_secret, LocaleController.getString(R.string.StartEncryptedChat));
                     otherItem.setSubItemShown(start_secret_chat, !getMessagesController().isUserPremiumBlocked(userId));
-                }
-                if (StrUtil.isNotBlank(user.username)) {
-                    otherItem.addSubItem(qr_code, R.drawable.msg_qrcode, LocaleController.getString("ShareQRCode", R.string.ShareQRCode));
                 }
                 if (!isBot && getContactsController().contactsDict.get(userId) != null) {
                     otherItem.addSubItem(add_shortcut, R.drawable.msg_home, LocaleController.getString(R.string.AddShortcut));
@@ -10631,15 +10685,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
                 otherItem.addSubItem(leave_group, R.drawable.msg_leave, LocaleController.getString(R.string.DeleteAndExit));
             }
-            if (StrUtil.isNotBlank(chat.username) || ChatObject.canUserDoAdminAction(chat, ChatObject.ACTION_INVITE)) {
-                otherItem.addSubItem(qr_code, R.drawable.msg_qrcode, LocaleController.getString("ShareQRCode", R.string.ShareQRCode));
-            }
             if (topicId == 0) {
                 otherItem.addSubItem(add_shortcut, R.drawable.msg_home, LocaleController.getString(R.string.AddShortcut));
             }
         }
-
-        // NekoX-TODO: Check Chnage
 
         if (imageUpdater != null) {
             otherItem.addSubItem(set_as_main, R.drawable.msg_openprofile, LocaleController.getString(R.string.SetAsMain));
@@ -10656,6 +10705,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         if (selfUser && !myProfile) {
             otherItem.addSubItem(logout, R.drawable.msg_leave, LocaleController.getString(R.string.LogOut));
         } else {
+            if (getDialogId() != 0 && !FiltersListBottomSheet.getCanAddDialogFilters(this, getDialogId()).isEmpty()) {
+                otherItem.addSubItem(add_to_folder, R.drawable.msg_folders, LocaleController.getString(R.string.FilterAddTo));
+            }
             otherItem.addSubItem(clear_cache, R.drawable.msg_delete, LocaleController.getString(R.string.ClearCache));
         }
         if (!isPulledDown) {
@@ -10944,9 +10996,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         if (otherItem != null) {
             otherItem.setVisibility(itemVisibility);
         }
-//        if (qrItem != null) {
-
-        //        }
+        if (qrItem != null) {
+            updateQrItemVisibility(false);
+        }
         searchItem.setVisibility(itemVisibility);
 
         searchItem.getSearchContainer().setVisibility(searchTransitionProgress > 0.5f ? View.GONE : View.VISIBLE);
@@ -11001,9 +11053,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 otherItem.setVisibility(visibility);
                 otherItem.setAlpha(progressHalf);
             }
-//            if (qrItem != null) {
-
-//            }
+            if (qrItem != null) {
+                qrItem.setAlpha(progressHalf);
+                updateQrItemVisibility(false);
+            }
             searchItem.setVisibility(visibility);
 
             actionBar.onSearchFieldVisibilityChanged(searchTransitionProgress < 0.5f);
@@ -11011,9 +11064,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             if (otherItem != null) {
                 otherItem.setAlpha(progressHalf);
             }
-//            if (qrItem != null) {
-//                qrItem.setAlpha(progressHalf);
-//            }
+            if (qrItem != null) {
+                qrItem.setAlpha(progressHalf);
+            }
             searchItem.setAlpha(progressHalf);
             topView.invalidate();
             fragmentView.invalidate();
@@ -11074,9 +11127,10 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             otherItem.setAlpha(1f);
             otherItem.setVisibility(hide);
         }
-//        if (qrItem != null) {
-
-//        }
+        if (qrItem != null) {
+            qrItem.setAlpha(1f);
+            qrItem.setVisibility(enter || !isQrNeedVisible() ? View.GONE : View.VISIBLE);
+        }
         searchItem.setVisibility(hide);
 
         avatarContainer.setAlpha(1f);
@@ -14453,6 +14507,68 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         itemOptions.show();
 
         return true;
+    }
+
+    private void showAddCurrentChatToFolderSheet() {
+        ArrayList<Long> selectedDialogs = new ArrayList<>(1);
+        selectedDialogs.add(getDialogId());
+        FiltersListBottomSheet sheet = new FiltersListBottomSheet(ProfileActivity.this, selectedDialogs);
+        sheet.setDelegate((filter, checked) -> {
+            ArrayList<Long> alwaysShow = FiltersListBottomSheet.getDialogsCount(ProfileActivity.this, filter, selectedDialogs, true, false);
+            if (!checked) {
+                int currentCount;
+                if (filter != null) {
+                    currentCount = filter.alwaysShow.size();
+                } else {
+                    currentCount = 0;
+                }
+                int totalCount = currentCount + alwaysShow.size();
+                if ((totalCount > getMessagesController().dialogFiltersChatsLimitDefault && !getUserConfig().isPremium()) || totalCount > getMessagesController().dialogFiltersChatsLimitPremium) {
+                    showDialog(new LimitReachedBottomSheet(ProfileActivity.this, fragmentView.getContext(), LimitReachedBottomSheet.TYPE_CHATS_IN_FOLDER, currentAccount, null));
+                    return;
+                }
+            }
+            if (filter != null) {
+                if (checked) {
+                    for (int a = 0; a < selectedDialogs.size(); a++) {
+                        filter.neverShow.add(selectedDialogs.get(a));
+                        filter.alwaysShow.remove(selectedDialogs.get(a));
+                    }
+                    FilterCreateActivity.saveFilterToServer(filter, filter.flags, filter.emoticon, filter.name, filter.color, filter.alwaysShow, filter.neverShow, filter.pinnedDialogs, false, false, true, true, false, ProfileActivity.this, null);
+                    long did;
+                    if (selectedDialogs.size() == 1) {
+                        did = selectedDialogs.get(0);
+                    } else {
+                        did = 0;
+                    }
+                    final UndoView undoView = getUndoView();
+                    if (undoView != null) {
+                        undoView.showWithAction(did, UndoView.ACTION_REMOVED_FROM_FOLDER, selectedDialogs.size(), filter, null, null);
+                    }
+                } else {
+                    if (!alwaysShow.isEmpty()) {
+                        for (int a = 0; a < alwaysShow.size(); a++) {
+                            filter.neverShow.remove(alwaysShow.get(a));
+                        }
+                        filter.alwaysShow.addAll(alwaysShow);
+                        FilterCreateActivity.saveFilterToServer(filter, filter.flags, filter.emoticon, filter.name, filter.color, filter.alwaysShow, filter.neverShow, filter.pinnedDialogs, false, false, true, true, false, ProfileActivity.this, null);
+                    }
+                    long did;
+                    if (alwaysShow.size() == 1) {
+                        did = alwaysShow.get(0);
+                    } else {
+                        did = 0;
+                    }
+                    final UndoView undoView = getUndoView();
+                    if (undoView != null) {
+                        undoView.showWithAction(did, UndoView.ACTION_ADDED_TO_FOLDER, alwaysShow.size(), filter, null, null);
+                    }
+                }
+            } else {
+                presentFragment(new FilterCreateActivity(null, alwaysShow));
+            }
+        });
+        showDialog(sheet);
     }
 
     private void updateItemsUsername() {
