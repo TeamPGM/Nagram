@@ -7621,37 +7621,33 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
             }
 
-            BottomBuilder builder = new BottomBuilder(getParentActivity());
-            builder.addTitle("@" + username);
+            final ItemOptions o = ItemOptions.makeOptions(this, view);
+            o.setScrimViewBackground(listView.getClipBackground(view));
 
-            builder.addItem(LocaleController.getString(R.string.QrCode), R.drawable.msg_qrcode, __ -> {
+            o.add(R.drawable.msg_qrcode, LocaleController.getString(R.string.QrCode), () -> {
                 Bundle args = new Bundle();
                 args.putLong("chat_id", chatId);
                 args.putLong("user_id", userId);
                 presentFragment(new QrActivity(args));
-                return Unit.INSTANCE;
             });
 
             if (chatInfo != null && chatInfo.can_set_username) {
-                builder.addItem(LocaleController.getString(R.string.Edit), R.drawable.msg_edit, __ -> {
+                o.add(R.drawable.msg_edit, LocaleController.getString(R.string.Edit), () -> {
                     ChatEditTypeActivity fragment = new ChatEditTypeActivity(chatId, chatInfo.can_set_location);
                     fragment.setInfo(chatInfo);
                     presentFragment(fragment);
-                    return Unit.INSTANCE;
                 });
             }
 
-            builder.addItem(LocaleController.getString(R.string.Copy), R.drawable.msg_copy, __ -> {
+            o.add(R.drawable.msg_copy, LocaleController.getString(R.string.Copy), () -> {
                 AlertUtil.copyAndAlert("@" + username);
-                return Unit.INSTANCE;
             });
 
-            builder.addItem(LocaleController.getString(R.string.CopyLink), R.drawable.msg_link, __ -> {
+            o.add(R.drawable.msg_link, LocaleController.getString(R.string.CopyLink), () -> {
                 AlertUtil.copyAndAlert(link);
-                return Unit.INSTANCE;
             });
 
-            builder.addItem(LocaleController.getString(R.string.ShareSendTo), R.drawable.msg_share, __ -> {
+            o.add(R.drawable.msg_share, LocaleController.getString(R.string.ShareSendTo), () -> {
                 ShareAlert shareAlert = new ShareAlert(getParentActivity(), null, link, false, link, false) {
                     @Override
                     protected void onSend(LongSparseArray<TLRPC.Dialog> dids, int count, TLRPC.TL_forumTopic topic, boolean showToast) {
@@ -7662,10 +7658,9 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     }
                 };
                 showDialog(shareAlert);
-                return Unit.INSTANCE;
             });
 
-            builder.show();
+            o.show();
             return true;
         } else if (position == restrictionReasonRow) {
             ArrayList<TLRPC.RestrictionReason> reasons = new ArrayList<>();
